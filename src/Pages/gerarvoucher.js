@@ -18,6 +18,7 @@ export class GeraVoucher extends React.Component {
             empresasPromocao: [],
             promocao: this.props.route.params.id_promocao,
             procurar: '', 
+            showToastCounter: 0
         }
 
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -77,7 +78,9 @@ export class GeraVoucher extends React.Component {
         await this.setState({
             empresas: empresa
         })
+
         let contador_erro = 0;
+
         if(erro === true){
             contador_erro += 1;
             if(contador_erro > 10){
@@ -99,6 +102,17 @@ export class GeraVoucher extends React.Component {
     filtrar(text){
         if (this.timeout){
             clearTimeout(this.timeout);
+        }
+        
+        let counter = this.state.showToastCounter;
+        if(this.state.showToastCounter < 1){
+            ToastAndroid.show("CNPJ sem pontuação", ToastAndroid.LONG);
+            
+            counter++
+
+            this.setState({
+                showToastCounter: counter
+            })
         }
 
         this.timeout = setTimeout(()=>{

@@ -21,7 +21,8 @@ export class ModelPromocoes extends PureComponent{
             selectedCash: false,
             openModalViewEmpresas: false,
             empresas_promocao: [],
-            empresas_promocao_view: []
+            empresas_promocao_view: [],
+            textWeekDays: null
         }
 
         this.voltar = this.voltar.bind(this);
@@ -35,8 +36,39 @@ export class ModelPromocoes extends PureComponent{
         });
 
         this.get_produto()
+        this.get_day_of_week()
     }
     
+    get_day_of_week(){
+        let text = "";
+        
+        if (this.props.items.segunda){
+            text = text + " " +  "Segunda"
+        }
+        if (this.props.items.terca){
+            text = text + " " +  "Terça"
+        }
+        if (this.props.items.quarta){
+            text = text + " " + "Quarta"
+        }
+        if (this.props.items.quinta){
+            text = text + " " +  "Quinta"
+        }
+        if (this.props.items.sexta){
+            text = text + " " +  "Sexta"
+        }
+        if (this.props.items.sabado){
+            text = text + " " +  "Sabado"
+        }
+        if (this.props.items.domingo){
+            text = text + " " +  "Domingo"
+        }
+
+        this.setState({
+            textWeekDays: text
+        })
+    }
+
     async voltar() {
         await this.setState({
             openModalView: false,
@@ -162,6 +194,7 @@ export class ModelPromocoes extends PureComponent{
                                         <Text style={styles.scrollTextTitulo}>Infos e Regras</Text>
                                         <Text style={styles.textInfo}>Valido até: {this.format_date(this.props.items.data_fim)}</Text>
                                         <Text style={styles.textInfo}>Desconto por unidade: R${this.props.items.desconto_por_unidade}</Text>
+                                        <Text style={styles.textInfo}>Dias da semana:{this.state.textWeekDays}</Text>
                                     </View>
                                     { !this.props.semana ?
                                         (

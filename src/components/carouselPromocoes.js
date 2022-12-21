@@ -68,7 +68,7 @@ export class CarrouselPromo extends PureComponent{
         })
         .catch((error)=>{
             if (error.name === 'AxiosError'){
-                this.get_promotion()
+                this.props.navigation.navigate("login")
             }else if (error.response.data.error === 'Signature verification failed'){
                 this.props.navigation.navigate('login')
             }else if(error.response.data.error === 'Token expirado'){

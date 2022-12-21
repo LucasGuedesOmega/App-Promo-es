@@ -395,5 +395,102 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: "15%",
         borderRadius: 45
+    },
+    centeredModalMenu: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    modalView: {
+        width: "80%",
+        height: "60%",
+        flexDirection: 'column',
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    modalViewVoucher: {
+        flex: 1,
+        width: '100%',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    headerModalMenu: {
+        flex: 1,
+        width: '100%',
+        flexDirection: 'row'
+    },
+    bodyModalMenu: {
+        flex: 7,
+        width: '100%'
+    },
+    footerModalMenu: {
+        flex: 1,
+        width: '100%',
+        justifyContent: 'center'
+    },
+    textModalMenu: {
+        color: TEXTCOLOR,
+    },
+    listModalMenu: {
+        marginTop: '5%',
+        height: '100%'
+    },
+    headerModalMenuTitulo:{
+        flex: 2,
+        alignItems: 'flex-start'
+    },
+    headerModalMenuVoltar: {
+        flex: 1,
+        alignItems: 'flex-end',
+        justifyContent: 'center',
+    },
+    headerModalTextTitulo:{
+        fontSize: 25,
+        color: 'black'
+    },
+    backspaceIconModelMenu:{
+        color: 'black'
+    },
+    buttonVoltarModalMenu:{
+        flex: 1,
+        marginTop: '12%'
+    },
+    colunaModelMenu:{
+        flex: 3,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+    },
+    colunaModelMenuImage: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        marginRight: '5%'
+    },
+    imgPromoMenu: {
+        width: '75%',
+        height: '75%',
+    },
+    linhaModelMenu: {
+        flex: 1,
+        flexDirection: "row",
+        marginVertical: '1%'
+    },
+    textModalMenuVoucher: {
+        fontSize: 25,
+        color: TEXTCOLOR
     }
 });

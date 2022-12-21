@@ -1,6 +1,6 @@
 import React from "react";
 
-import { View, BackHandler, Text, FlatList, TouchableOpacity, TextInput } from "react-native";
+import { View, BackHandler, Text, FlatList, ToastAndroid, TextInput } from "react-native";
 
 import { styles } from "../temas/base";
 import { ModelEmpresas } from "../model/ModelEmpresas";
@@ -15,7 +15,10 @@ export class Promocao extends React.Component{
 
         this.state = {
             empresas: null,
-            tokenDecode: jwtDecode(SyncStorage.get('token'))
+            tokenDecode: jwtDecode(SyncStorage.get('token')),
+            procurar: '', 
+            showToastCounter: 0,
+            dados_voucher: this.props.route.params
         }
 
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -24,6 +27,8 @@ export class Promocao extends React.Component{
     async componentDidMount(){
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
         this.get_empresas();
+
+        console.log(this.state.dados_voucher)
     }
 
     componentWillUnmount() {
@@ -52,6 +57,17 @@ export class Promocao extends React.Component{
     filtrar(text){
         if (this.timeout){
             clearTimeout(this.timeout);
+        }
+        
+        let counter = this.state.showToastCounter;
+        if(this.state.showToastCounter < 1){
+            ToastAndroid.show("CNPJ sem pontuação", ToastAndroid.LONG);
+            
+            counter++
+
+            this.setState({
+                showToastCounter: counter
+            })
         }
 
         this.timeout = setTimeout(()=>{
@@ -97,7 +113,8 @@ export class Promocao extends React.Component{
                 <View style={styles.corpo}>
                     <FlatList
                         data={this.state.empresas}
-                        renderItem={(items)=><ModelEmpresas item={items}/>}
+                        navigation={this.props.navigation}
+                        renderItem={(items)=><ModelEmpresas dados_dict={this.state.dados_voucher} navigation={this.props.navigation} item={items}/>}
                     />
                 </View>
             </View>
