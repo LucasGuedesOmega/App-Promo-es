@@ -14,13 +14,11 @@ export class ModelEmpresas extends React.PureComponent{
         return(
             <TouchableOpacity style={styles.linhaModelEmpresa}>
                 <View style={styles.colunaModelEmpresaIcone}>
-                    <Text style={styles.activeText}><MaterialCommunityIcons size={25} style={styles.icons} name={'gas-station'} /></Text>
+                    <MaterialCommunityIcons name="gas-station" size={30} color={"rgb(100, 100, 100)"}/>
                 </View>
-                <View style={styles.colunaModelEmpresa}>
-                    <Text style={styles.activeText}>{this.props.item.item.razao_social}</Text>
-                </View>
-                <View style={styles.colunaModelEmpresa}>
-                    <TextInputMask type={"cnpj"} editable={false} style={styles.activeText} value={this.props.item.item.cnpj}/>
+                <View style={styles.colunaModelEmpresaInfo}>
+                    <Text style={styles.textInfo}> {this.props.item.item.razao_social}</Text>
+                    <TextInputMask type={"cnpj"} editable={false} style={styles.textInfo} value={this.props.item.item.cnpj}/>
                 </View>
             </TouchableOpacity>
         );

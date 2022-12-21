@@ -84,6 +84,11 @@ export const styles = StyleSheet.create({
         width: '30px',
         height: '30px'
     },
+    iconsEscuro:{
+        color: TEXTCOLOR,
+        width: '30px',
+        height: '30px'
+    },
     colunaModel:{
         flex: 1,
         flexDirection: 'column',
@@ -276,7 +281,8 @@ export const styles = StyleSheet.create({
     },
     contentHeaderEmpresa:{
         flex: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        margin: '1%'
     },  
     viewTitleEmpresa: {
         flex: 1,
@@ -299,11 +305,13 @@ export const styles = StyleSheet.create({
     },
     inputSearch: {
         width: '100%',
-        padding: 0
+        padding: 0,
+        margin: '1%'
     },
     iconLupa:{
         justifyContent: 'center',
         alignItems: 'center',
+        margin: '1%'
     },
     btVolatrModalEmpresa:{
         flexDirection: 'row',
@@ -320,10 +328,18 @@ export const styles = StyleSheet.create({
         paddingBottom: 10,
         width: '100%',
     },
+    headerPromocao:{
+        flex: 1.2,
+        marginBottom: 3,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingBottom: 10,
+        width: '100%',
+    },
     bodyVoucher: {
         flex: 8,
         width: '100%',
-        backgroundColor: CONTENTCOLORTRASPARENTVOUCHER,
+        backgroundColor: THIRDCONTENTCOLOR,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
     },
@@ -336,11 +352,11 @@ export const styles = StyleSheet.create({
         borderBottomColor: INPUTSCOLOR,
         borderBottomWidth: 1
     },
-    colunaModelEmpresa:{
+    colunaModelEmpresaInfo:{
         flex: 3,
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'flex-start'
     },
     colunaModelEmpresaIcone:{
         flex: 1,

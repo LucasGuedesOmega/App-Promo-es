@@ -1,19 +1,29 @@
 import React from "react";
 
-import { View, ScrollView, BackHandler } from "react-native";
-import { Cabecalho } from "../components";
-import { styles } from "../temas/base";
+import { View, BackHandler, Text, FlatList, TouchableOpacity, TextInput } from "react-native";
 
+import { styles } from "../temas/base";
+import { ModelEmpresas } from "../model/ModelEmpresas";
+
+import Ionicons from "react-native-vector-icons/Ionicons";
+import api from "../services/api";
+import SyncStorage from 'sync-storage';
+import jwtDecode from "jwt-decode";
 export class Promocao extends React.Component{
     constructor(props){
         super(props);
 
-    
+        this.state = {
+            empresas: null,
+            tokenDecode: jwtDecode(SyncStorage.get('token'))
+        }
+
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     }
 
     async componentDidMount(){
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+        this.get_empresas();
     }
 
     componentWillUnmount() {
@@ -25,14 +35,70 @@ export class Promocao extends React.Component{
         return true;
     }
 
+    get_empresas(){
+        api.get(`api/v1/empresa?id_grupo_empresa=${this.state.tokenDecode.id_grupo_empresa}`, { headers: { Authorization: SyncStorage.get('token')}})
+        .then(async (results)=>{
+            if (results.data.length > 0){
+                await this.setState({
+                    empresas: results.data
+                })
+            }
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+    }
+
+    filtrar(text){
+        if (this.timeout){
+            clearTimeout(this.timeout);
+        }
+
+        this.timeout = setTimeout(()=>{
+            let upperText = text.toUpperCase();
+
+            this.setState({procurar: upperText});
+            if (upperText === ''){
+                this.get_empresas();
+            } else {
+                let filteredData = this.state.empresas.filter((item)=> {
+                    if (item.razao_social.toUpperCase().indexOf(upperText) > -1){
+                        return true;
+                    } else if (item.cnpj.indexOf(upperText) > -1){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                    
+                });
+                this.setState({
+                    empresas: filteredData
+                });
+            }
+        }, 650);
+    }
+
     render(){
         return(
             <View style={styles.content}>
-                <Cabecalho/>
+                <View style={styles.headerPromocao}>
+                    <View style={styles.contentHeaderEmpresa}>
+                        <View style={styles.viewTitleEmpresa}>
+                            <Text style={styles.titleEmpresa}>Estabelecimentos</Text>
+                        </View>
+                        <View style={styles.viewVoltarModalEmpresa}>
+                        </View>
+                    </View>
+                    <View style={styles.viewSearch}>
+                        <Ionicons name="md-search-sharp" size={25} style={styles.iconLupa}/>
+                        <TextInput placeholder="Digite para pesquisar" autoCapitalize="none" onChangeText={(text)=>{this.filtrar(text)}} style={styles.inputSearch}/>
+                    </View>
+                </View>
                 <View style={styles.corpo}>
-                    <ScrollView style={styles.scrollView}>
-                        <View style={styles.viewScrollSection}></View>
-                    </ScrollView>
+                    <FlatList
+                        data={this.state.empresas}
+                        renderItem={(items)=><ModelEmpresas item={items}/>}
+                    />
                 </View>
             </View>
         );

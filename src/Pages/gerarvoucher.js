@@ -31,8 +31,6 @@ export class GeraVoucher extends React.Component {
         await this.get_empresas_promocao()
         this.get_empresas()
 
-        console.log(this.props.route)
-
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
 
