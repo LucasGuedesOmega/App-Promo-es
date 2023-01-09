@@ -1,14 +1,24 @@
 import React from "react";
 
-import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
+import { View, Text, TouchableOpacity, Image, Alert, Modal} from "react-native";
 import { styles } from "../temas/base";
 
+import { ToggleButton } from "../components";
 import api from "../services/api";
 import SyncStorage from 'sync-storage';
+
+import Barcode from "react-native-barcode-builder";
 
 export class ModelPromocaoCampact extends React.Component{
     constructor(props){
         super(props);
+        this.state = {
+            open_modal: false,
+            selectedPromocao: true,
+            selectedCash: false,
+            modalVoucher: false,
+            voucher: null
+        }
     }
 
     format_date(date){
@@ -44,12 +54,20 @@ export class ModelPromocaoCampact extends React.Component{
 
         data_ini = mm + '/' + dd + '/' + yyyy;
 
+        let tipo_promocao = null;
+        
+        if (this.state.selectedCash){
+            tipo_promocao = 'CASHBACK'
+        } else if (this.state.selectedPromocao) {
+            tipo_promocao = 'DESCONTO'
+        }   
+
         let dados_dict = {
             data_ini: data_ini,
             id_promocao: this.props.items.item.id_promocao,
             id_empresa: this.props.empresa.id_empresa,
             status: true,
-            tipoCodigo: 'CASHBACK',
+            tipoCodigo: tipo_promocao,
             usado: false
         }
 
@@ -57,24 +75,34 @@ export class ModelPromocaoCampact extends React.Component{
         .then((results)=>{
             console.log(results.data)
             if (results.data.Voucher){
-                Alert.alert("Voucher", 
-                `${results.data.Voucher}`,
-                [
-                    {
-                        text: "OK",
-                        onPress: ()=>{return;}
-                    }
-                ]
-                )
+                this.setState({
+                    modalVoucher: true,
+                    open_modal: false,
+                    voucher: results.data.Voucher
+                })
+                console.log(this.state.voucher)
             }
         })
     }
 
+    onClickButtonSelected(){
+        if (this.state.selectedPromocao===true && this.state.selectedCash === false){
+            this.setState({
+                selectedPromocao: false,
+                selectedCash: true
+            })
+        }else if (this.state.selectedPromocao===false && this.state.selectedCash === true){
+            this.setState({
+                selectedPromocao: true,
+                selectedCash: false
+            })
+        }
+    }
+    
     render(){
-        console.log(this.props.empresa)
         return(
             <View>
-                <TouchableOpacity style={styles.linhaModelMenu} onPress={()=>{this.get_voucher()}}>
+                <TouchableOpacity style={styles.linhaModelMenu} onPress={()=>{this.setState({open_modal: true})}}>
                     <View style={styles.colunaModelMenuImage}>
                         <Image source={{uri: `${this.props.items.item.imagem}`}} style={styles.imgPromoMenu}/>
                     </View>
@@ -87,6 +115,43 @@ export class ModelPromocaoCampact extends React.Component{
                         </Text>
                     </View>
                 </TouchableOpacity>
+                <Modal animationType="slide" transparent={true} visible={this.state.open_modal} onRequestClose={()=>{this.setState({open_modal: false})}}>
+                    <TouchableOpacity onPress={()=>{this.setState({open_modal: false})}} style={styles.contentModelTransparent}>
+                        <View style={styles.modalContentCashBack}>
+                            <View style={{flex: 1, flexDirection: "row",  justifyContent: "center", alignItems: 'flex-end'}}>
+                                <View><Text style={styles.textColorModalCash}>Qual a forma de resgate?</Text></View>
+                            </View>
+                            <View style={{flex: 4, flexDirection: "row", justifyContent: "flex-start", alignItems: 'center'}}>
+                                <View style={{marginHorizontal: 5, flex: 1}}><ToggleButton text={'Desconto'} selected={this.state.selectedPromocao} onPress={()=>{this.onClickButtonSelected()}} /></View>
+                                <View style={{marginHorizontal: 5, flex: 1}}><ToggleButton text={'CashBack'} selected={this.state.selectedCash} onPress={()=>{this.onClickButtonSelected()}} /></View> 
+                            </View>
+                            <TouchableOpacity onPress={()=>{this.get_voucher()}} style={styles.buttonVoucher}><Text style={styles.textColorButtonVoucher}>GERAR VOUCHER</Text></TouchableOpacity>
+                        </View>
+                        <Text style={{color: 'white', fontSize: 15}}>Para sair toque fora da caixa</Text>
+                    </TouchableOpacity>
+                </Modal>
+                <Modal animationType="slide" transparent={true} visible={this.state.modalVoucher} onRequestClose={()=>{this.setState({modalVoucher: false})}}>
+                    <TouchableOpacity  onPress={()=>{this.setState({modalVoucher: false})}} style={styles.contentModelTransparent}>
+                        <View style={styles.modalContentVoucher}>
+                            <View style={{flex: 2, flexDirection: "row"}}>
+                                <View style={{ padding: 15, alignItems: 'center', width: '100%' }}>
+                                    <Text style={styles.textColorModalVoucher}>Voucher</Text>
+                                </View>
+                            </View>
+                            <View style={{flex: 2, flexDirection: "row"}}>
+                                <View style={{ padding: 15, alignItems: 'center', width: '100%' }}><Barcode value={`${this.state.voucher}`} format="CODE128" /></View>
+                            </View>
+                            <View style={{flex: 2, flexDirection: "row", marginTop: '10%'}}>
+                                <View style={{ padding: 15, alignItems: 'center', width: '100%' }}><Text style={styles.textColorModalVoucher}>{this.state.voucher}</Text></View>
+                            </View>
+                            <View style={{flex: 2, flexDirection: "row"}}>
+                                <View style={{paddingHorizontal: 5 , alignItems: 'flex-start', width: '100%' }}><Text style={styles.textColorModalVoucherAviso}>Informe ao operador ou escaneie o código Voucher.</Text></View>
+                            </View>
+                            <TouchableOpacity onPress={()=>{this.setState({modalVoucher: false})}} style={styles.buttonVoucher}><Text style={styles.textColorButtonVoucher}>Fechar</Text></TouchableOpacity>
+                        </View>
+                        <Text style={{color: 'white', fontSize: 15}}>Para sair toque fora da caixa</Text>
+                    </TouchableOpacity>
+                </Modal>
             </View>
             
         );

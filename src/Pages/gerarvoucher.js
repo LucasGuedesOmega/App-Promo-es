@@ -159,7 +159,7 @@ export class GeraVoucher extends React.Component {
                 <View style={styles.bodyVoucher}>
                     <FlatList
                         data={this.state.empresas}
-                        renderItem={(items)=><ModelEmpresas item={items}/>}
+                        renderItem={(items)=><ModelEmpresas id_promocao={this.state.promocao} telaInicial={true} item={items}/>}
                     />
                 </View>
             </View>

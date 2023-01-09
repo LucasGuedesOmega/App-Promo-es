@@ -1,19 +1,30 @@
 import React from "react";
 
-import { View, ScrollView, BackHandler } from "react-native";
-import { Cabecalho } from "../components";
+import { View, ScrollView, BackHandler, FlatList, Text, TextInput} from "react-native";
 import { styles } from "../temas/base";
+import { ModelProdutos } from "../model/modelProdutos";
 
+import api from "../services/api";
+import SyncStorage from 'sync-storage';
+import jwtDecode from "jwt-decode";
+import Ionicons from "react-native-vector-icons/Ionicons";
 export class Produtos extends React.Component{
     constructor(props){
         super(props);
-
+        this.state = {
+            produtos: [],
+            tokenDecode: jwtDecode(SyncStorage.get('token')),
+            showToastCounter: 0,
+            procurar: ''
+        }
     
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     }
 
     async componentDidMount(){
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+
+        await this.get_produtos();
     }
 
     componentWillUnmount() {
@@ -25,14 +36,83 @@ export class Produtos extends React.Component{
         return true;
     }
 
+    async get_produtos(){
+        api.get(`/api/v1/integracao/produto/lista?id_empresa=${this.state.tokenDecode.id_empresa}`, { headers: { Authorization: SyncStorage.get('token')}})
+        .then((results)=>{
+            if (results.data.length > 0){
+                this.setState({
+                    produtos: results.data
+                });
+            }
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+    }
+
+    filtrar(text){
+        if (this.timeout){
+            clearTimeout(this.timeout);
+        }
+        
+        let counter = this.state.showToastCounter;
+        if(this.state.showToastCounter < 1){
+            // ToastAndroid.show("CNPJ sem pontuação", ToastAndroid.LONG);
+            counter++
+
+            this.setState({
+                showToastCounter: counter
+            })
+        }
+
+        this.timeout = setTimeout(()=>{
+            let upperText = text.toUpperCase();
+
+            this.setState({procurar: upperText});
+            if (upperText === ''){
+                this.get_produtos();
+            } else {
+                let filteredData = this.state.produtos.filter((item)=> {
+                    if (item.descricao.toUpperCase().indexOf(upperText) > -1){
+                        return true;
+                    } else if (item.codigo_barras.indexOf(upperText) > -1){
+                        return true;
+                    } else if (item.id_externo.indexOf(upperText) > -1){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                    
+                });
+                this.setState({
+                    produtos: filteredData
+                });
+            }
+        }, 650);
+    }
+
     render(){
         return(
             <View style={styles.content}>
-                <Cabecalho/>
+                <View style={styles.headerPromocao}>
+                    <View style={styles.contentHeaderEmpresa}>
+                        <View style={styles.viewTitleEmpresa}>
+                            <Text style={styles.titleEmpresa}>Produtos</Text>
+                        </View>
+                        <View style={styles.viewVoltarModalEmpresa}>
+                        </View>
+                    </View>
+                    <View style={styles.viewSearch}>
+                        <Ionicons name="md-search-sharp" size={25} style={styles.iconLupa}/>
+                        <TextInput placeholder="Digite para pesquisar" autoCapitalize="none" onChangeText={(text)=>{this.filtrar(text)}} style={styles.inputSearch}/>
+                    </View>
+                </View>
                 <View style={styles.corpo}>
-                    <ScrollView style={styles.scrollView}>
-                        <View style={styles.viewScrollSection}></View>
-                    </ScrollView>
+                    <FlatList
+                        data={this.state.produtos}
+                        navigation={this.props.navigation}
+                        renderItem={(items)=><ModelProdutos dados_dict={this.state.dados_voucher} navigation={this.props.navigation} item={items}/>}
+                    />
                 </View>
             </View>
         );

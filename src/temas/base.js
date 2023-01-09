@@ -402,22 +402,10 @@ export const styles = StyleSheet.create({
         alignItems: 'center'
     },
     modalView: {
-        width: "80%",
-        height: "60%",
         flexDirection: 'column',
-        margin: 20,
         backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 35,
         alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        padding: 25
     },
     modalViewVoucher: {
         flex: 1,
@@ -433,7 +421,8 @@ export const styles = StyleSheet.create({
     },
     bodyModalMenu: {
         flex: 7,
-        width: '100%'
+        width: '100%',
+        flexDirection: 'row'
     },
     footerModalMenu: {
         flex: 1,
@@ -442,6 +431,7 @@ export const styles = StyleSheet.create({
     },
     textModalMenu: {
         color: TEXTCOLOR,
+        fontSize: 20
     },
     listModalMenu: {
         marginTop: '5%',
@@ -465,7 +455,7 @@ export const styles = StyleSheet.create({
     },
     buttonVoltarModalMenu:{
         flex: 1,
-        marginTop: '12%'
+        marginTop: '7%'
     },
     colunaModelMenu:{
         flex: 3,
@@ -481,8 +471,8 @@ export const styles = StyleSheet.create({
         marginRight: '5%'
     },
     imgPromoMenu: {
-        width: '75%',
-        height: '75%',
+        width: '100%',
+        height: '100%',
     },
     linhaModelMenu: {
         flex: 1,
@@ -492,5 +482,66 @@ export const styles = StyleSheet.create({
     textModalMenuVoucher: {
         fontSize: 25,
         color: TEXTCOLOR
+    },
+    textModelProdutos: {
+        color: TEXTCOLOR
+    },
+    colunaModelProduto:{
+        flex: 3,
+        paddingHorizontal: 5,
+        justifyContent: "flex-start",
+        alignItems:'center'
+    },
+    linhaModelProduto:{
+        flex: 1,
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderBottomColor: INPUTSCOLOR,
+        paddingVertical: 25,
+    },
+    contentModelTransparent: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: CONTENTCOLORTRASPARENTVOUCHER
+    },
+    modalContentCashBack: {
+        width: "85%",
+        height: "25%",
+        backgroundColor: THIRDCONTENTCOLOR,
+        borderRadius: 4
+    },
+    modalContentVoucher: {
+        width: "85%",
+        height: "50%",
+        backgroundColor: THIRDCONTENTCOLOR,
+        borderRadius: 4,
+        zIndex: 1000
+    },
+    textColorModalCash: {
+        fontSize: 15,
+        color: TEXTCOLOR
+    },
+    textColorModalVoucher: {
+        fontSize: 20,
+        color: TEXTCOLOR,
+        textAlign: "center"
+    },
+    textColorModalVoucherAviso: {
+        fontSize: 20,
+        color: BUTTONSCOLORS,
+        textAlign: "center"
+    },
+    buttonVoucher: {
+        flex: 0.8,
+        width: '100%',
+        backgroundColor: BUTTONSCOLORS,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 10
+    },
+    textColorButtonVoucher: {
+        color: THIRDCONTENTCOLOR,
+        fontSize: 15
     }
 });

@@ -1139,6 +1139,15 @@
   dependencies:
     "merge-options" "^3.0.4"
 
+"@react-native-community/art@^1.2.0":
+  "integrity" "sha512-a+ZcRGl/BzLa89yi33Mbn5SHavsEXqKUMdbfLf3U8MDLElndPqUetoJyGkv63+BcPO49UMWiQRP1YUz6/zfJ+A=="
+  "resolved" "https://registry.npmjs.org/@react-native-community/art/-/art-1.2.0.tgz"
+  "version" "1.2.0"
+  dependencies:
+    "art" "^0.10.3"
+    "invariant" "^2.2.4"
+    "prop-types" "^15.7.2"
+
 "@react-native-community/async-storage@^1.6.3":
   "integrity" "sha512-70WGaH3PKYASi4BThuEEKMkyAgE9k7VytBqmgPRx3MzJx9/MkspwqJGmn3QLCgHLIFUgF1pit2mWICbRJ3T3lg=="
   "resolved" "https://registry.npmjs.org/@react-native-community/async-storage/-/async-storage-1.12.1.tgz"
@@ -1806,6 +1815,11 @@
     "define-properties" "^1.1.4"
     "es-abstract" "^1.20.4"
     "es-shim-unscopables" "^1.0.0"
+
+"art@^0.10.3":
+  "integrity" "sha512-HXwbdofRTiJT6qZX/FnchtldzJjS3vkLJxQilc3Xj+ma2MXjY4UAyQ0ls1XZYVnDvVIBiFZbC6QsvtW86TD6tQ=="
+  "resolved" "https://registry.npmjs.org/art/-/art-0.10.3.tgz"
+  "version" "0.10.3"
 
 "asap@~2.0.3", "asap@~2.0.6":
   "integrity" "sha512-BSHWgDSAiKs50o2Re8ppvp3seVHXSRM44cdSsT9FfNEUUZLOGWVCsiWaRPWM1Znn+mqZ1OfVZ3z3DWEzSp7hRA=="
@@ -4486,6 +4500,11 @@
   dependencies:
     "argparse" "^2.0.1"
 
+"jsbarcode@^3.8.0":
+  "integrity" "sha512-zv3KsH51zD00I/LrFzFSM6dst7rDn0vIMzaiZFL7qusTjPZiPtxg3zxetp0RR7obmjTw4f6NyGgbdkBCgZUIrA=="
+  "resolved" "https://registry.npmjs.org/jsbarcode/-/jsbarcode-3.11.5.tgz"
+  "version" "3.11.5"
+
 "jsc-android@^250230.2.1":
   "integrity" "sha512-KmxeBlRjwoqCnBBKGsihFtvsBHyUFlBxJPK4FzeYcIuBfdjv6jFys44JITAgSTbQD+vIdwMEfyZklsuQX0yI1Q=="
   "resolved" "https://registry.npmjs.org/jsc-android/-/jsc-android-250230.2.1.tgz"
@@ -5742,7 +5761,7 @@
     "kleur" "^3.0.3"
     "sisteransi" "^1.0.5"
 
-"prop-types@*", "prop-types@^15.6.1", "prop-types@^15.7.2", "prop-types@^15.8.1":
+"prop-types@*", "prop-types@^15.5.0", "prop-types@^15.6.1", "prop-types@^15.7.2", "prop-types@^15.8.1":
   "integrity" "sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg=="
   "resolved" "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   "version" "15.8.1"
@@ -5834,6 +5853,14 @@
   "integrity" "sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w=="
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-18.2.0.tgz"
   "version" "18.2.0"
+
+"react-native-barcode-builder@^2.0.0":
+  "integrity" "sha512-hOpP321behSPlpWNGcowN66P9Z2Xv6kQwa2I8SdfSGMFmJlll1b22R63xQSIAi72RC/gZe1cWBBz03J686e9JA=="
+  "resolved" "https://registry.npmjs.org/react-native-barcode-builder/-/react-native-barcode-builder-2.0.0.tgz"
+  "version" "2.0.0"
+  dependencies:
+    "@react-native-community/art" "^1.2.0"
+    "jsbarcode" "^3.8.0"
 
 "react-native-codegen@^0.0.17":
   "integrity" "sha512-7GIEUmAemH9uWwB6iYXNNsPoPgH06pxzGRmdBzK98TgFBdYJZ7CBuZFPMe4jmHQTPOkQazKZ/w5O6/71JBixmw=="

@@ -27,8 +27,6 @@ export class Promocao extends React.Component{
     async componentDidMount(){
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
         this.get_empresas();
-
-        console.log(this.state.dados_voucher)
     }
 
     componentWillUnmount() {
@@ -114,7 +112,7 @@ export class Promocao extends React.Component{
                     <FlatList
                         data={this.state.empresas}
                         navigation={this.props.navigation}
-                        renderItem={(items)=><ModelEmpresas dados_dict={this.state.dados_voucher} navigation={this.props.navigation} item={items}/>}
+                        renderItem={(items)=><ModelEmpresas id_promocao={null} dados_dict={this.state.dados_voucher} navigation={this.props.navigation} item={items}/>}
                     />
                 </View>
             </View>
