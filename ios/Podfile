@@ -19,6 +19,8 @@ target 'promo' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+
   target 'promoTests' do
     inherit! :complete
     # Pods for testing

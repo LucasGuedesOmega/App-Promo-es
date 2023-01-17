@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import api from "../services/api";
-import SyncStorage from 'sync-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -31,9 +31,13 @@ export class ModelPromocoes extends PureComponent{
     }       
 
     async componentDidMount(){
-        await this.setState({
-            token: jwtDecode(SyncStorage.get('token')) 
-        });
+        await AsyncStorage.getItem('token')
+        .then((token)=>{
+            this.setState({
+                tokenDecode: jwtDecode(token),
+                token: token
+            })
+        })
 
         this.get_produto()
         this.get_day_of_week()
@@ -82,7 +86,7 @@ export class ModelPromocoes extends PureComponent{
     }
 
     get_produto(){
-        api.get(`api/v1/integracao/produto/lista?id_produto=${this.props.items.id_produto}`, { headers: { Authorization: SyncStorage.get('token')}})
+        api.get(`api/v1/integracao/produto/lista?id_produto=${this.props.items.id_produto}`, { headers: { Authorization: this.state.token}})
         .then((results)=>{
             if (results.data.length>0){
                 this.setState({
@@ -93,7 +97,7 @@ export class ModelPromocoes extends PureComponent{
         .catch((error)=>{
             let count_error = 0
             if(error.name === "AxiosError"){
-                this.get_produto()
+                
                 count_error += 1
                 if (count_error > 10){
                     Alert.alert("Atenção", "Sem conexão com a API.",
@@ -104,6 +108,8 @@ export class ModelPromocoes extends PureComponent{
                         }
                     ]
                     )
+                }else{
+                    this.get_produto()
                 }
             }else if (error.response.data.error === 'Signature verification failed'){
                 this.props.navigation.navigate('login')
@@ -203,8 +209,8 @@ export class ModelPromocoes extends PureComponent{
                                                     <Text style={styles.scrollTextTitulo}>Como Descontar</Text>
                                                 </View>
                                                 <View style={styles.viewButtonsDesconto}>
-                                                    <View style={{margin: 5, flex: 1}}><ToggleButton text={'Desconto'} selected={this.state.selectedPromocao} onPress={()=>{this.onClickButtonSelected()}} /></View>
-                                                    <View style={{margin: 5, flex: 1}}><ToggleButton text={'CashBack'} selected={this.state.selectedCash} onPress={()=>{this.onClickButtonSelected()}} /></View>     
+                                                    <View style={{ flex: 1}}><ToggleButton text={'Desconto'} selected={this.state.selectedPromocao} onPress={()=>{this.onClickButtonSelected()}} /></View>
+                                                    <View style={{ flex: 1}}><ToggleButton text={'CashBack'} selected={this.state.selectedCash} onPress={()=>{this.onClickButtonSelected()}} /></View>     
                                                 </View>
                                             
                                                 <View style={styles.viewModalPromoSectionBodyBtVoucher}>
@@ -217,7 +223,6 @@ export class ModelPromocoes extends PureComponent{
                                         ):(
                                             <View></View>
                                         )
-
                                     }
                                     
                                 </View>

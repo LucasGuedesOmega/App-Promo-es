@@ -1,6 +1,6 @@
 import React from "react";
 import api from "../services/api";
-import SyncStorage from 'sync-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -10,6 +10,7 @@ import { ModelEmpresas } from "../model/ModelEmpresas";
 
 
 export class GeraVoucher extends React.Component {
+    _isMounted = false;
     constructor(props){
         super(props);
         this.state = {
@@ -18,15 +19,21 @@ export class GeraVoucher extends React.Component {
             empresasPromocao: [],
             promocao: this.props.route.params.id_promocao,
             procurar: '', 
-            showToastCounter: 0
+            showToastCounter: 0, 
+            token: null,
+            tokenDecode: null
         }
 
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     }
 
     async componentDidMount(){
-        await this.setState({
-            token: jwtDecode(SyncStorage.get('token')) 
+        await AsyncStorage.getItem('token')
+        .then((token)=>{
+            this.setState({
+                tokenDecode: jwtDecode(token),
+                token: token
+            })
         })
 
         await this.get_empresas_promocao()
@@ -45,7 +52,7 @@ export class GeraVoucher extends React.Component {
     }
 
     async get_empresas_promocao(){
-        await api.get(`api/v1/empresas-promocao?id_promocao=${this.state.promocao}&status=true`,  { headers: { Authorization: SyncStorage.get('token')}})
+        await api.get(`api/v1/empresas-promocao?id_promocao=${this.state.promocao}&status=true`,  { headers: { Authorization: this.state.token}})
         .then((results)=>{
             if(results.data.length > 0){
                 this.setState({
@@ -63,7 +70,7 @@ export class GeraVoucher extends React.Component {
         var empresa = []
         var erro = false;
         for (let i = 0; this.state.empresasPromocao.length > i; i++){
-            await api.get(`api/v1/empresa?id_empresa=${this.state.empresasPromocao[i].id_empresa}`, { headers: { Authorization: SyncStorage.get('token')}})
+            await api.get(`api/v1/empresa?id_empresa=${this.state.empresasPromocao[i].id_empresa}`, { headers: { Authorization: this.state.token}})
             .then((results)=>{
                 if(results.data.length > 0){
                     empresa.push(results.data[0])

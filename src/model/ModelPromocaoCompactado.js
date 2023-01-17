@@ -5,7 +5,9 @@ import { styles } from "../temas/base";
 
 import { ToggleButton } from "../components";
 import api from "../services/api";
-import SyncStorage from 'sync-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import jwtDecode from "jwt-decode";
 
 import Barcode from "react-native-barcode-builder";
 
@@ -19,6 +21,16 @@ export class ModelPromocaoCampact extends React.Component{
             modalVoucher: false,
             voucher: null
         }
+    }
+
+    async componentDidMount(){
+        await AsyncStorage.getItem('token')
+        .then((token)=>{
+            this.setState({
+                tokenDecode: jwtDecode(token),
+                token: token
+            })
+        })
     }
 
     format_date(date){
@@ -71,7 +83,7 @@ export class ModelPromocaoCampact extends React.Component{
             usado: false
         }
 
-        await api.post("api/v1/gera-voucher", dados_dict, { headers : {Authorization: SyncStorage.get('token')}})
+        await api.post("api/v1/gera-voucher", dados_dict, { headers : {Authorization: this.state.token}})
         .then((results)=>{
             console.log(results.data)
             if (results.data.Voucher){
@@ -107,7 +119,7 @@ export class ModelPromocaoCampact extends React.Component{
                         <Image source={{uri: `${this.props.items.item.imagem}`}} style={styles.imgPromoMenu}/>
                     </View>
                     <View style={styles.colunaModelMenu}>
-                        <Text style={styles.textModalMenu}>
+                        <Text style={styles.textModalMenuTitulo}>
                             {this.props.items.item.titulo}
                         </Text>
                         <Text style={styles.textModalMenu}>
@@ -134,15 +146,15 @@ export class ModelPromocaoCampact extends React.Component{
                     <TouchableOpacity  onPress={()=>{this.setState({modalVoucher: false})}} style={styles.contentModelTransparent}>
                         <View style={styles.modalContentVoucher}>
                             <View style={{flex: 2, flexDirection: "row"}}>
-                                <View style={{ padding: 15, alignItems: 'center', width: '100%' }}>
+                                <View style={{ alignItems: 'center', width: '100%' }}>
                                     <Text style={styles.textColorModalVoucher}>Voucher</Text>
                                 </View>
                             </View>
                             <View style={{flex: 2, flexDirection: "row"}}>
-                                <View style={{ padding: 15, alignItems: 'center', width: '100%' }}><Barcode value={`${this.state.voucher}`} format="CODE128" /></View>
+                                <View style={{ alignItems: 'center', width: '100%'}}><Barcode height={60} value={`${this.state.voucher}`} format="CODE128" /></View>
                             </View>
-                            <View style={{flex: 2, flexDirection: "row", marginTop: '10%'}}>
-                                <View style={{ padding: 15, alignItems: 'center', width: '100%' }}><Text style={styles.textColorModalVoucher}>{this.state.voucher}</Text></View>
+                            <View style={{flex: 2, flexDirection: "row"}}>
+                                <View style={{ alignItems: 'center', width: '100%' }}><Text style={styles.textColorModalVoucher}>{this.state.voucher}</Text></View>
                             </View>
                             <View style={{flex: 2, flexDirection: "row"}}>
                                 <View style={{paddingHorizontal: 5 , alignItems: 'flex-start', width: '100%' }}><Text style={styles.textColorModalVoucherAviso}>Informe ao operador ou escaneie o código Voucher.</Text></View>

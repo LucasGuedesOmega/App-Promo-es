@@ -7,15 +7,18 @@ import { ModelEmpresas } from "../model/ModelEmpresas";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 import api from "../services/api";
-import SyncStorage from 'sync-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
+
 export class Promocao extends React.Component{
+    _isMounted = false;
     constructor(props){
         super(props);
 
         this.state = {
             empresas: null,
-            tokenDecode: jwtDecode(SyncStorage.get('token')),
+            tokenDecode: null,
+            token: null,
             procurar: '', 
             showToastCounter: 0,
             dados_voucher: this.props.route.params
@@ -25,6 +28,13 @@ export class Promocao extends React.Component{
     }
 
     async componentDidMount(){
+        await AsyncStorage.getItem('token')
+        .then((token)=>{
+            this.setState({
+                tokenDecode: jwtDecode(token),
+                token: token
+            })
+        })
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
         this.get_empresas();
     }
@@ -39,7 +49,7 @@ export class Promocao extends React.Component{
     }
 
     get_empresas(){
-        api.get(`api/v1/empresa?id_grupo_empresa=${this.state.tokenDecode.id_grupo_empresa}`, { headers: { Authorization: SyncStorage.get('token')}})
+        api.get(`api/v1/empresa?id_grupo_empresa=${this.state.tokenDecode.id_grupo_empresa}`, { headers: { Authorization:this.state.token}})
         .then(async (results)=>{
             if (results.data.length > 0){
                 await this.setState({

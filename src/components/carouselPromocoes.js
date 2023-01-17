@@ -1,10 +1,10 @@
 import React, { PureComponent } from "react";
 import api from "../services/api";
-import { View } from "react-native";
+import { View, Alert } from "react-native";
 import { styles } from "../temas/base";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import jwtDecode from "jwt-decode";
-import SyncStorage from 'sync-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ModelPromocoes } from "../model/ModelPromocoes";
 
 export class CarrouselPromo extends PureComponent{
@@ -12,9 +12,11 @@ export class CarrouselPromo extends PureComponent{
         super(props);
         this.state = {
             token: null,
+            tokenDecode: null,
             indexPromotions:0,
             promotions: [],
-            semana_: this.props.semana
+            semana_: this.props.semana,
+            contadorError: 0
         }
 
         this.get_promotion = this.get_promotion.bind(this);
@@ -22,8 +24,12 @@ export class CarrouselPromo extends PureComponent{
     }
 
     async componentDidMount(){
-        await this.setState({
-            token: jwtDecode(SyncStorage.get('token')) 
+        await AsyncStorage.getItem('token')
+        .then((token)=>{
+            this.setState({
+                tokenDecode: jwtDecode(token),
+                token: token
+            })
         })
 
         this.get_promotion()
@@ -34,7 +40,7 @@ export class CarrouselPromo extends PureComponent{
         var allPromotions_list = [];
         let hoje = new Date();
         
-        await api.get(`/api/v1/promocao?id_empresa=${this.state.token.id_empresa}`, { headers: { Authorization: SyncStorage.get('token')}})
+        await api.get(`/api/v1/promocao?id_empresa=${this.state.tokenDecode.id_empresa}`, { headers: { Authorization: this.state.token}})
         .then(async (results)=>{
             if (results.data.length > 0){
                 for(var i=0; i<results.data.length;i++){
@@ -51,8 +57,6 @@ export class CarrouselPromo extends PureComponent{
                     if(data_fim > hoje && data_ini < hoje && results.data[i].status === true){
                         allPromotions_list.push(results.data[i])
                     }
-                    
-                    
                 }
                 if(this.props.semana === true){
                     this.setState({
@@ -67,8 +71,25 @@ export class CarrouselPromo extends PureComponent{
             }
         })
         .catch((error)=>{
+            let count_error = this.state.contadorError;
             if (error.name === 'AxiosError'){
-                this.props.navigation.navigate("login")
+                count_error += 1;
+                this.setState({
+                    contadorError: count_error
+                })
+
+                if (this.state.contadorError === 25){
+                    Alert.alert("Atenção", "Sem conexão com a API.",
+                    [
+                        {
+                            text: "OK",
+                            onPress: ()=>{return;}
+                        }
+                    ]
+                    )
+                }
+
+                this.get_promotion()
             }else if (error.response.data.error === 'Signature verification failed'){
                 this.props.navigation.navigate('login')
             }else if(error.response.data.error === 'Token expirado'){

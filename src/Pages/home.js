@@ -1,22 +1,24 @@
 import React from "react";
 import api from "../services/api";
-import SyncStorage from 'sync-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
 
-import { View, ScrollView, Text, FlatList, BackHandler, Alert} from "react-native";
+import { View, ScrollView, Text, FlatList, BackHandler, Alert } from "react-native";
 import { styles } from "../temas/base";
 
 import { ModelButtons } from "../model/ModelButtons";
 import { Cabecalho } from "../components";
 import { CarrouselPromo } from "../components/carouselPromocoes";
-import { ModelPostos } from "../model/ModelPostos";
+// import { ModelPostos } from "../model/ModelPostos";
 
 
-export class Home extends React.Component {
+export class Home extends React.PureComponent {
+    _isMounted = false;
     constructor(props){
         super(props);
         this.state = {
             token: null,
+            tokenDecode: null,
             buttonAcoes: [
                 {icon: 'pluscircle'},
                 {icon: 'barschart'},
@@ -25,7 +27,8 @@ export class Home extends React.Component {
                 {icon: 'frown'},
                 {icon: 'frown'}
             ],
-            empresas: null
+            empresas: null,
+            contadorError:  0
         }
 
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -33,8 +36,12 @@ export class Home extends React.Component {
     }
 
     async componentDidMount(){
-        await this.setState({
-            token: jwtDecode(SyncStorage.get('token')) 
+        await AsyncStorage.getItem('token')
+        .then((token)=>{
+            this.setState({
+                tokenDecode: jwtDecode(token),
+                token: token
+            })
         })
 
         this.get_empresas()
@@ -45,14 +52,14 @@ export class Home extends React.Component {
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
-    
+
     handleBackButtonClick() {
         this.props.navigation.goBack(null);
         return true;
     }
 
     get_empresas(){
-        api.get(`/api/v1/empresa?id_grupo_empresa=${this.state.token.id_grupo_empresa}`, {headers: { Authorization: SyncStorage.get('token')}})
+        api.get(`/api/v1/empresa?id_grupo_empresa=${this.state.tokenDecode.id_grupo_empresa}`, {headers: { Authorization: this.state.token}})
         .then((results)=>{
             if (results.data.length > 0){
                 
@@ -62,12 +69,15 @@ export class Home extends React.Component {
             }
         })
         .catch((error)=>{
-            console.log(error)
-            let count_error = 0
+            console.log(error.response)
+            let count_error = this.state.contadorError;
             if(error.name === "AxiosError"){
-                this.get_empresas()
+                
                 count_error += 1
-                if (count_error > 10){
+                this.setState({
+                    contadorError: count_error
+                })
+                if (this.state.contadorError === 25){
                     Alert.alert("Atenção", "Sem conexão com a API.",
                     [
                         {
@@ -76,12 +86,15 @@ export class Home extends React.Component {
                         }
                     ]
                     )
+                }else{
+                    this.get_empresas()
                 }
+                
             }else if (error.response.data.error === 'Signature verification failed'){
                 this.props.navigation.navigate('login')
             }else if(error.response.data.error === 'Token expirado'){
                 this.props.navigation.navigate('login')
-            }else if(error.response.data.error === 'Token expirado'){
+            }else if(error.response.data.error === 'não autorizado'){
                 this.props.navigation.navigate('login')
             }
         })

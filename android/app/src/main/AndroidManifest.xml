@@ -2,6 +2,8 @@
   package="com.promo">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>         <!-- for Device Name -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>  <!-- for Phone Number -->
 
     <application
       android:name=".MainApplication"

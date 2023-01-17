@@ -20,13 +20,6 @@ export const styles = StyleSheet.create({
     text: {
         color: 'black'
     },
-    grid_view:{
-        flex: 1.5,
-        borderRadius: 10,
-        justifyContent: 'center',
-        alignItems: 'center', 
-        minHeight: 110
-    },
     input: {
         color: THIRDCONTENTCOLOR,
         minWidth: '80%',
@@ -84,11 +77,6 @@ export const styles = StyleSheet.create({
         width: '30px',
         height: '30px'
     },
-    iconsEscuro:{
-        color: TEXTCOLOR,
-        width: '30px',
-        height: '30px'
-    },
     colunaModel:{
         flex: 1,
         flexDirection: 'column',
@@ -126,12 +114,6 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         margin: 10
     },
-    buttonCart: {
-        margin: 10
-    },
-    buttonAlert: {
-        margin: 10
-    },
     scrollView:{
         padding: 2,
     },
@@ -153,9 +135,6 @@ export const styles = StyleSheet.create({
     viewScrollSectionBodyCarousel: {
         minHeight: 450,
         justifyContent: 'center'
-    },
-    viewScrollSectionFooter: {
-        flex: 1,
     },
     scrollTextTitulo: {
         fontSize: 18,
@@ -185,11 +164,6 @@ export const styles = StyleSheet.create({
         marginBottom: 5,
         flex: 1
     },
-    textModalPromo: {
-        color: TEXTCOLOR,
-        textAlign: 'center',
-        fontSize: 17
-    },
     carouselPromo: {
         flex: 1
     },
@@ -199,11 +173,6 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    cabecalhoSectionImg: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: 'center'
-    },
     corpoModal:{
         flex: 5,
         backgroundColor: THIRDCONTENTCOLOR,
@@ -211,10 +180,6 @@ export const styles = StyleSheet.create({
         borderTopRightRadius: 25,
         width: '100%',
         padding: 1
-    },
-    imgPromoModal: {
-        width: '100%',
-        height: '100%'
     },
     buttonVoltarModal: {
         zIndex: 1,
@@ -243,7 +208,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center'
     },
     activeButtonSelected: {
-        backgroundColor: BUTTONSCOLORS,
+        backgroundColor: CONTENTCOLOR,
         padding: 10,
         borderRadius: 20,
         flex: 1,
@@ -256,7 +221,7 @@ export const styles = StyleSheet.create({
         borderRadius: 20,
         flex: 1,
         borderWidth: 1,
-        borderColor: BUTTONSCOLORS,
+        borderColor: CONTENTCOLOR,
         maxHeight: 45
     },
     activeText: {
@@ -264,7 +229,7 @@ export const styles = StyleSheet.create({
         textAlign: 'center'
     },
     notActiveText: {
-        color: BUTTONSCOLORS,
+        color: CONTENTCOLOR,
         textAlign: 'center'
     },
     textInfo: {
@@ -312,10 +277,6 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         margin: '1%'
-    },
-    btVolatrModalEmpresa:{
-        flexDirection: 'row',
-        justifyContent: 'center',
     },
     backspaceIcon: {
         margin: 2
@@ -405,37 +366,39 @@ export const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: 'white',
         alignItems: 'center',
-        padding: 25
-    },
-    modalViewVoucher: {
-        flex: 1,
-        width: '100%',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center'
     },
     headerModalMenu: {
-        flex: 1,
         width: '100%',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        backgroundColor: CONTENTCOLOR,
+        padding: 10,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 12,
+        },
+        shadowOpacity: 0.58,
+        shadowRadius: 16.00,
+        elevation: 24,
     },
     bodyModalMenu: {
         flex: 7,
         width: '100%',
-        flexDirection: 'row'
+        flexDirection: 'column'
     },
-    footerModalMenu: {
-        flex: 1,
-        width: '100%',
-        justifyContent: 'center'
-    },
-    textModalMenu: {
+    textModalMenuTitulo: {
         color: TEXTCOLOR,
         fontSize: 20
     },
+    textModalMenu: {
+        color: TEXTCOLOR,
+        fontSize: 15
+    },
     listModalMenu: {
-        marginTop: '5%',
-        height: '100%'
+        padding: 10,
+        height: '100%',
+        borderTopWidth: 2,
+        borderTopColor: INPUTSCOLOR
     },
     headerModalMenuTitulo:{
         flex: 2,
@@ -443,19 +406,20 @@ export const styles = StyleSheet.create({
     },
     headerModalMenuVoltar: {
         flex: 1,
-        alignItems: 'flex-end',
+        alignItems: 'flex-start',
         justifyContent: 'center',
     },
     headerModalTextTitulo:{
         fontSize: 25,
-        color: 'black'
+        color: 'white'
     },
     backspaceIconModelMenu:{
-        color: 'black'
+        color: 'white'
     },
     buttonVoltarModalMenu:{
         flex: 1,
-        marginTop: '7%'
+        marginTop: '6%',
+        marginLeft: '2%'
     },
     colunaModelMenu:{
         flex: 3,
@@ -477,11 +441,10 @@ export const styles = StyleSheet.create({
     linhaModelMenu: {
         flex: 1,
         flexDirection: "row",
-        marginVertical: '1%'
-    },
-    textModalMenuVoucher: {
-        fontSize: 25,
-        color: TEXTCOLOR
+        marginVertical: '1%',
+        borderBottomWidth: 1,
+        borderBottomColor: INPUTSCOLOR,
+        paddingBottom: 10
     },
     textModelProdutos: {
         color: TEXTCOLOR
@@ -512,6 +475,7 @@ export const styles = StyleSheet.create({
         borderRadius: 4
     },
     modalContentVoucher: {
+        flexDirection: 'column',
         width: "85%",
         height: "50%",
         backgroundColor: THIRDCONTENTCOLOR,
@@ -529,13 +493,13 @@ export const styles = StyleSheet.create({
     },
     textColorModalVoucherAviso: {
         fontSize: 20,
-        color: BUTTONSCOLORS,
+        color: CONTENTCOLOR,
         textAlign: "center"
     },
     buttonVoucher: {
         flex: 0.8,
         width: '100%',
-        backgroundColor: BUTTONSCOLORS,
+        backgroundColor: CONTENTCOLOR,
         alignItems: 'center',
         justifyContent: 'center',
         padding: 10
@@ -543,5 +507,82 @@ export const styles = StyleSheet.create({
     textColorButtonVoucher: {
         color: THIRDCONTENTCOLOR,
         fontSize: 15
+    },
+    viewListaPromocao: {
+        width: '100%',
+        flexDirection: 'row'
+    },
+    headerPaginainicial:{
+        flex: 3,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: CONTENTCOLOR
+    },
+    bodyPaginainicial:{
+        flex: 6,
+        width: '100%',
+        borderTopLeftRadius: 12,
+        borderTopRightRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: THIRDCONTENTCOLOR,
+        flexDirection: 'column'
+    },
+    footerPaginainicial:{
+        flex: 3,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: THIRDCONTENTCOLOR
+    },
+    styledText: {
+        fontSize: 15,
+        color: CONTENTCOLOR
+    },
+    styledTextWhite: {
+        fontSize: 15,
+        color: THIRDCONTENTCOLOR
+    },
+    styledButton: {
+        backgroundColor: CONTENTCOLOR,
+        borderWidth: 1,
+        borderColor: THIRDCONTENTCOLOR,
+        borderRadius: 23,
+        padding: 10,
+        width: "40%",
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 5
+    },
+    styledButtonWhite: {
+        backgroundColor: THIRDCONTENTCOLOR,
+        borderWidth: 1,
+        borderColor: CONTENTCOLOR,
+        borderRadius: 23,
+        padding: 10,
+        width: "40%",
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 5
+    },
+    textButtonEntrar: {
+        fontSize: 15,
+        color: CONTENTCOLOR
+    },
+    headerBodyPaginaInicial: {
+        flex: 1,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    bodyBodyPaginaInicial: {
+        flex: 1.5,
+        width: '100%',
+        alignItems: 'center'
+    },
+    styledTituloText: {
+        fontSize: 25,
+        color: CONTENTCOLOR
     }
 });

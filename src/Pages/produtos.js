@@ -5,15 +5,17 @@ import { styles } from "../temas/base";
 import { ModelProdutos } from "../model/modelProdutos";
 
 import api from "../services/api";
-import SyncStorage from 'sync-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
 import Ionicons from "react-native-vector-icons/Ionicons";
 export class Produtos extends React.Component{
+    _isMounted = false;
     constructor(props){
         super(props);
         this.state = {
             produtos: [],
-            tokenDecode: jwtDecode(SyncStorage.get('token')),
+            tokenDecode: null,
+            token: null,
             showToastCounter: 0,
             procurar: ''
         }
@@ -22,6 +24,14 @@ export class Produtos extends React.Component{
     }
 
     async componentDidMount(){
+        await AsyncStorage.getItem('token')
+        .then((token)=>{
+            this.setState({
+                tokenDecode: jwtDecode(token),
+                token: token
+            })
+        })
+
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
 
         await this.get_produtos();
@@ -37,7 +47,7 @@ export class Produtos extends React.Component{
     }
 
     async get_produtos(){
-        api.get(`/api/v1/integracao/produto/lista?id_empresa=${this.state.tokenDecode.id_empresa}`, { headers: { Authorization: SyncStorage.get('token')}})
+        api.get(`/api/v1/integracao/produto/lista?id_empresa=${this.state.tokenDecode.id_empresa}`, { headers: { Authorization:this.state.token}})
         .then((results)=>{
             if (results.data.length > 0){
                 this.setState({

@@ -1,15 +1,17 @@
 import React from "react";
 
 import { TextInputMask } from "react-native-masked-text";
-import { View, TouchableOpacity, Text, Modal, FlatList, ToastAndroid, Alert} from "react-native";
+import { View, TouchableOpacity, Text, Modal, FlatList, ToastAndroid, Alert } from "react-native";
 import { styles } from "../temas/base";
 
 import api from "../services/api";
-import SyncStorage from 'sync-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ModelPromocaoCampact } from "./ModelPromocaoCompactado";
+
+import jwtDecode from "jwt-decode";
 
 import Barcode from "react-native-barcode-builder";
 export class ModelEmpresas extends React.PureComponent{
@@ -22,12 +24,21 @@ export class ModelEmpresas extends React.PureComponent{
             dados_dict: this.props.dados_dict,
             semana_: false,
             modalVoucher: false,
-            voucher: null
+            voucher: null,
+            token: null, 
+            tokenDecodde: null
         }
 
     }   
 
-    componentDidMount(){
+    async componentDidMount(){
+        await AsyncStorage.getItem('token')
+        .then((token)=>{
+            this.setState({
+                tokenDecode: jwtDecode(token),
+                token: token
+            })
+        })
         if(this.state.dados_dict){
             this.setState({
                 modalVisible: false
@@ -37,7 +48,7 @@ export class ModelEmpresas extends React.PureComponent{
 
     async get_promocoes(){
         let empresa_promocao = [];
-        await api.get(`api/v1/empresas-promocao?id_empresa=${this.props.item.item.id_empresa}`, { headers : {Authorization: SyncStorage.get('token')}})
+        await api.get(`api/v1/empresas-promocao?id_empresa=${this.props.item.item.id_empresa}`, { headers : {Authorization: this.state.token}})
         .then((results)=>{
             if (results.data.length > 0){
                 for (let i = 0; i < results.data.length; i++){
@@ -52,16 +63,13 @@ export class ModelEmpresas extends React.PureComponent{
         })
         .catch((error)=>{
             console.log(error)
-            if(error.name === "AxiosError"){
-                this.props.navigation.navigate("login")
-            }
         })
         
         if (this.state.empresas_promocao && this.props.id_promocao === null){
             let promocoes = [];
             let hoje = new Date();
             for(let i = 0; i < this.state.empresas_promocao.length; i++){
-                await api.get(`api/v1/promocao?id_promocao=${this.state.empresas_promocao[i].id_promocao}`, { headers : {Authorization: SyncStorage.get('token')}})
+                await api.get(`api/v1/promocao?id_promocao=${this.state.empresas_promocao[i].id_promocao}`, { headers : {Authorization: this.state.token}})
                 .then(async (results)=>{
                     if (results.data.length > 0){
                         for (let i = 0; i < results.data.length; i++){
@@ -82,9 +90,6 @@ export class ModelEmpresas extends React.PureComponent{
                 })
                 .catch((error)=>{
                     console.log(error)
-                    if(error.name === "AxiosError"){
-                        this.props.navigate("login")
-                    }
                 })
             }
             if (promocoes.length > 0){
@@ -135,7 +140,7 @@ export class ModelEmpresas extends React.PureComponent{
             usado: false
         }
 
-        await api.post("api/v1/gera-voucher", dados_dict, { headers : {Authorization: SyncStorage.get('token')}})
+        await api.post("api/v1/gera-voucher", dados_dict, { headers : {Authorization:this.state.token}})
         .then((results)=>{
             if (results.data.Voucher){
                 this.setState({
@@ -163,21 +168,23 @@ export class ModelEmpresas extends React.PureComponent{
                     <View style={styles.centeredModalMenu}>
                         <View style={styles.modalView}>
                             <View style={styles.headerModalMenu}>
+                                <View style={styles.headerModalMenuVoltar}>
+                                    <TouchableOpacity style={styles.buttonVoltarModalMenu} onPress={()=>{this.setState({modalVisible: false})}}>
+                                        <Ionicons name="chevron-back-sharp" size={25} style={styles.backspaceIconModelMenu}/>
+                                    </TouchableOpacity>
+                                </View>
                                 <View style={styles.headerModalMenuTitulo}>
                                     <Text style={styles.headerModalTextTitulo}>Promoções</Text>
                                 </View>
-                                <View style={styles.headerModalMenuVoltar}>
-                                    <TouchableOpacity style={styles.buttonVoltarModalMenu} onPress={()=>{this.setState({modalVisible: false})}}>
-                                        <Ionicons name="backspace-outline" size={25} style={styles.backspaceIconModelMenu}/>
-                                    </TouchableOpacity>
-                                </View>
                             </View>
                             <View style={styles.bodyModalMenu}>
-                                <FlatList
-                                    data={this.state.promocoes}
-                                    style={styles.listModalMenu}
-                                    renderItem={(items)=>(<ModelPromocaoCampact navigation={this.props.navigation} empresa={this.props.item.item} items={items}/>)}
-                                />
+                                <View style={styles.viewListaPromocao}>
+                                    <FlatList
+                                        data={this.state.promocoes}
+                                        style={styles.listModalMenu}
+                                        renderItem={(items)=>(<ModelPromocaoCampact navigation={this.props.navigation} empresa={this.props.item.item} items={items}/>)}
+                                    />
+                                </View>
                             </View>
 
                         </View>
@@ -186,18 +193,18 @@ export class ModelEmpresas extends React.PureComponent{
                 <Modal animationType="slide" transparent={true} visible={this.state.modalVoucher} onRequestClose={()=>{this.setState({modalVoucher: false})}}>
                     <TouchableOpacity  onPress={()=>{this.setState({modalVoucher: false})}} style={styles.contentModelTransparent}>
                         <View style={styles.modalContentVoucher}>
-                            <View style={{flex: 2, flexDirection: "row"}}>
-                                <View style={{ padding: 15, alignItems: 'center', width: '100%' }}>
+                            <View style={{flex: 2}}>
+                                <View style={{ alignItems: 'center', width: '100%' }}>
                                     <Text style={styles.textColorModalVoucher}>Voucher</Text>
                                 </View>
                             </View>
-                            <View style={{flex: 2, flexDirection: "row"}}>
-                                <View style={{ padding: 15, alignItems: 'center', width: '100%' }}><Barcode value={`${this.state.voucher}`} format="CODE128" /></View>
+                            <View style={{flex: 2}}>
+                                <View style={{ alignItems: 'center', width: '100%' }}><Barcode height={60} value={`${this.state.voucher}`} format="CODE128" /></View>
                             </View>
-                            <View style={{flex: 2, flexDirection: "row", marginTop: '10%'}}>
-                                <View style={{ padding: 15, alignItems: 'center', width: '100%' }}><Text style={styles.textColorModalVoucher}>{this.state.voucher}</Text></View>
+                            <View style={{flex: 2}}>
+                                <View style={{ alignItems: 'center', width: '100%' }}><Text style={styles.textColorModalVoucher}>{this.state.voucher}</Text></View>
                             </View>
-                            <View style={{flex: 2, flexDirection: "row"}}>
+                            <View style={{flex: 2}}>
                                 <View style={{paddingHorizontal: 5 , alignItems: 'flex-start', width: '100%' }}><Text style={styles.textColorModalVoucherAviso}>Informe ao operador ou escaneie o código Voucher.</Text></View>
                             </View>
                             <TouchableOpacity onPress={()=>{this.setState({modalVoucher: false})}} style={styles.buttonVoucher}><Text style={styles.textColorButtonVoucher}>Fechar</Text></TouchableOpacity>
