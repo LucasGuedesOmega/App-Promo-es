@@ -129,9 +129,6 @@ export class Login extends React.Component {
                 <View>
                     <TextInput secureTextEntry={true} style={styles.input} placeholder="Senha"  autoCapitalize={"none"} placeholderTextColor={'rgb(180, 180, 180)'} onChangeText={(value)=>{this.setState({senha: value})}} />
                 </View>
-                <View style={{width: '100%', flexDirection: 'row', alignItems: 'center', padding: 5, paddingBottom: 10}}>
-                    <TouchableOpacity style={{alignItems: 'center', width: '100%'}} ><Text >Não tem cadastro? Cadastre-se aqui.</Text></TouchableOpacity>
-                </View>
                 <View>
                     <TouchableOpacity style={styles.button} onPress={this.commit_form}>
                         <Text style={{color: 'white', textAlign: 'center', fontSize: 20}}>Entrar</Text>

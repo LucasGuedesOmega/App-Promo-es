@@ -3,7 +3,7 @@ import api from "../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
 
-import { View, ScrollView, Text, FlatList, BackHandler, Alert } from "react-native";
+import { View, ScrollView, Text, FlatList, BackHandler, Alert, ToastAndroid } from "react-native";
 import { styles } from "../temas/base";
 
 import { ModelButtons } from "../model/ModelButtons";
@@ -28,7 +28,8 @@ export class Home extends React.PureComponent {
                 {icon: 'frown'}
             ],
             empresas: null,
-            contadorError:  0
+            contadorError:  0,
+            contadorClicks: 0
         }
 
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -54,7 +55,19 @@ export class Home extends React.PureComponent {
     }
 
     handleBackButtonClick() {
-        this.props.navigation.goBack(null);
+        let count_clicks = this.state.contadorClicks
+
+        count_clicks ++
+
+        this.setState({
+            contadorClicks: count_clicks
+        })
+
+        if (count_clicks === 1){
+            ToastAndroid.show("Toque mais uma vez para sair.", ToastAndroid.LONG);
+        }else if (count_clicks === 2){
+            BackHandler.exitApp();
+        }
         return true;
     }
 
@@ -78,7 +91,7 @@ export class Home extends React.PureComponent {
                     contadorError: count_error
                 })
                 if (this.state.contadorError === 25){
-                    Alert.alert("Atenção", "Sem conexão com a API.",
+                    Alert.alert("AtenÃ§Ã£o", "Sem conexão com a API.",
                     [
                         {
                             text: "OK",
@@ -98,7 +111,7 @@ export class Home extends React.PureComponent {
                 this.props.navigation.navigate('login')
             }
         })
-    }
+    }   
 
     render(){
         return (

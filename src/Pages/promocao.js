@@ -10,7 +10,7 @@ import api from "../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
 
-export class Promocao extends React.Component{
+export class Promocao extends React.PureComponent{
     _isMounted = false;
     constructor(props){
         super(props);

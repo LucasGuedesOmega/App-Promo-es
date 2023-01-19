@@ -116,6 +116,7 @@ export const styles = StyleSheet.create({
     },
     scrollView:{
         padding: 2,
+        width: '100%'
     },
     viewScrollSection: {
         flex: 1,
@@ -513,7 +514,7 @@ export const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     headerPaginainicial:{
-        flex: 3,
+        flex: 1.7,
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
@@ -522,8 +523,8 @@ export const styles = StyleSheet.create({
     bodyPaginainicial:{
         flex: 6,
         width: '100%',
-        borderTopLeftRadius: 12,
-        borderTopRightRadius: 12,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: THIRDCONTENTCOLOR,
@@ -547,7 +548,7 @@ export const styles = StyleSheet.create({
     styledButton: {
         backgroundColor: CONTENTCOLOR,
         borderWidth: 1,
-        borderColor: THIRDCONTENTCOLOR,
+        borderColor: CONTENTCOLOR,
         borderRadius: 23,
         padding: 10,
         width: "40%",
@@ -579,10 +580,73 @@ export const styles = StyleSheet.create({
     bodyBodyPaginaInicial: {
         flex: 1.5,
         width: '100%',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: '5%'
     },
     styledTituloText: {
-        fontSize: 25,
+        fontSize: 30,
         color: CONTENTCOLOR
+    },
+    textInputStyled: {
+        width: '90%',
+        color: TEXTCOLOR
+    },
+    contentInputStyled: {
+        maxWidth: '80%',
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderBottomColor: TITLESCOLOR,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: '2%',
+    },
+    contentCheckStyled: {
+        maxWidth: '80%',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: '2%',
+    },
+    contentInputStyledPassword: {
+        maxWidth: '80%',
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderBottomColor: TITLESCOLOR,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: '2%',
+        paddingHorizontal: '3%'
+    },
+    iconInputStyled: {
+        color: TEXTCOLOR,
+    },
+    placeholderColor: {
+        color: TEXTCOLOR
+    },
+    checkBoxStyled:{
+        alignSelf: 'center'
+    },
+    contentHeaderPaginaIinical: {
+        flex: 1,
+        width: "100%",
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    styledButtonCadastro: {
+        backgroundColor: CONTENTCOLOR,
+        borderRadius: 100,
+        padding: 10,
+        width: 65,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 5
+    },
+    viewContentHeader: {
+        flex: 1,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column'
     }
 });

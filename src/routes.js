@@ -13,6 +13,7 @@ import { Produtos } from "./Pages/produtos";
 import { GeraVoucher } from "./Pages/gerarvoucher";
 import { Promocao } from "./Pages/promocao";
 import { PaginaInicial } from "./Pages/paginaincial";
+import { ConfirmaEmail } from "./Pages/confirma_email";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -83,6 +84,7 @@ export class Routes extends React.Component{
                     <tab.Screen options={{ headerShown: false, tabBarStyle: { display: "none" }, tabBarButton: () => null}} name="pagina_inicial" component={PaginaInicial}/>
                     <tab.Screen options={{ headerShown: false, tabBarStyle: { display: "none" }, tabBarButton: () => null}} name="login" component={Login}/>
                     <tab.Screen options={{ headerShown: false, tabBarStyle: { display: "none" }, tabBarButton: () => null}} name="cadastro_usuario" component={CadastrarUsuario}/>
+                    <tab.Screen options={{ headerShown: false, tabBarStyle: { display: "none" }, tabBarButton: () => null}} name="confirma_email" component={ConfirmaEmail}/>
                     <tab.Screen options={{ unmountOnBlur: true, headerShown: false, tabBarButton: () => null,  tabBarStyle: { display: "none" }}} name="gera_voucher" component={GeraVoucher}/>
                     <tab.Screen options={{ unmountOnBlur: true, headerShown: false, title:"Inico", tabBarIcon: ({size, color})=>(<Ionicons name="home" size={size} color={color}/>)}} name="home" component={Home}/>
                     <tab.Screen options={{ unmountOnBlur: true, headerShown: false, tabBarItemStyle: {color: 'red'}, title:"Abastecer", tabBarIcon: ({size, color})=>(<View style={styles.buttonAbastecer}><MaterialCommunityIcons name="gas-station" size={size} color={color}/></View>)}} name="promocao" component={Promocao}/>
