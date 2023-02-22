@@ -114,6 +114,12 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         margin: 10
     },
+    buttonCart: {
+        margin: 10
+    },
+    buttonAlert: {
+        margin: 10
+    },
     scrollView:{
         padding: 2,
         width: '100%'
@@ -351,12 +357,12 @@ export const styles = StyleSheet.create({
     },
     buttonAbastecer:{
         backgroundColor: '#09649d',
-        width: '38%',
+        width: '60%',
         height: '150%',
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: "15%",
-        borderRadius: 45
+        borderRadius: 80
     },
     centeredModalMenu: {
         flex: 1,
@@ -551,7 +557,7 @@ export const styles = StyleSheet.create({
         borderColor: CONTENTCOLOR,
         borderRadius: 23,
         padding: 10,
-        width: "40%",
+        width: "43%",
         justifyContent: 'center',
         alignItems: 'center',
         margin: 5
@@ -562,7 +568,7 @@ export const styles = StyleSheet.create({
         borderColor: CONTENTCOLOR,
         borderRadius: 23,
         padding: 10,
-        width: "40%",
+        width: "43%",
         justifyContent: 'center',
         alignItems: 'center',
         margin: 5
@@ -648,5 +654,12 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column'
+    },
+    mapa:{
+        flex: 1
+    },
+    imageMarkerUser: {
+        width: '5px',
+        height: '5px'
     }
 });

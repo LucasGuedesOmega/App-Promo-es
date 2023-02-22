@@ -23,28 +23,28 @@ export class CarrouselPromo extends PureComponent{
         this.compare_days_of_week = this.compare_days_of_week.bind(this);
     }
 
-    async componentDidMount(){
-        await AsyncStorage.getItem('token')
+    componentDidMount(){
+        AsyncStorage.getItem('token')
         .then((token)=>{
             this.setState({
                 tokenDecode: jwtDecode(token),
                 token: token
-            })
+            }, (()=>{
+                this.get_promotion()
+            }))
         })
-
-        this.get_promotion()
     }
 
-    async get_promotion(){
+    get_promotion(){
         var promotion_list = [];
         var allPromotions_list = [];
         let hoje = new Date();
         
-        await api.get(`/api/v1/promocao?id_empresa=${this.state.tokenDecode.id_empresa}`, { headers: { Authorization: this.state.token}})
-        .then(async (results)=>{
+        api.get(`/api/v1/promocao?id_empresa=${this.state.tokenDecode.id_empresa}`, { headers : {Authorization:this.state.token}})
+        .then((results)=>{
             if (results.data.length > 0){
                 for(var i=0; i<results.data.length;i++){
-                    await this.compare_days_of_week(results.data[i])
+                    this.compare_days_of_week(results.data[i])
 
                     let data_fim_promo = results.data[i].data_fim;
                     let data_ini_promo = results.data[i].data_ini
@@ -71,13 +71,14 @@ export class CarrouselPromo extends PureComponent{
             }
         })
         .catch((error)=>{
+            console.log(error)
             let count_error = this.state.contadorError;
-            if (error.name === 'AxiosError'){
-                count_error += 1;
+            if(error.name === "AxiosError"){
+                
+                count_error += 1
                 this.setState({
                     contadorError: count_error
                 })
-
                 if (this.state.contadorError === 25){
                     Alert.alert("Atenção", "Sem conexão com a API.",
                     [
@@ -87,15 +88,22 @@ export class CarrouselPromo extends PureComponent{
                         }
                     ]
                     )
+                }else{
+                    this.get_promotion()
                 }
-
-                this.get_promotion()
-            }else if (error.response.data.error === 'Signature verification failed'){
+            }
+            if (error.response.data.error === 'Signature verification failed'){
                 this.props.navigation.navigate('login')
+                return;
             }else if(error.response.data.error === 'Token expirado'){
                 this.props.navigation.navigate('login')
+                return;
             }else if(error.response.data.error === 'Token expirado'){
                 this.props.navigation.navigate('login')
+                return;
+            }else if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
+                this.props.navigation.navigate('login')
+                return;
             }
         })
     }

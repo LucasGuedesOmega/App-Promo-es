@@ -21,13 +21,14 @@ export class CadastrarUsuario extends React.Component {
         this.state = {
             token: null,
             tokenDecode: null,
-            cpf: '10829658980',
+            cpf: null,
             checkBoxValue: false,
-            telefone: '41988509779',
-            password: '2112',
-            email: 'lucas.guedes@omegaautomacao.com',
-            usuario: 'guedes',
-            nome: 'Lucas Guidolin Guedes'
+            telefone: null,
+            password: null,
+            email: null,
+            usuario: null,
+            nome: null,
+            id_usuario_cadastro: null
         }
     }
     componentDidMount(){
@@ -168,22 +169,62 @@ export class CadastrarUsuario extends React.Component {
                 status: true,
                 user_admin: false,
                 user_app: true,
-                id_empresa: EMPRESA
+                id_empresa: EMPRESA,
+                id_grupo_empresa: GRUPO_EMPRESA,
+                cpf: this.state.cpf
             }
         ]
 
+        api.post('api/v1/usuario', dados_usuario)
+        .then((results)=>{
+            if (results.data){
+                this.setState({
+                    id_usuario_cadastro: results.data.id
+                })
+
+                this.cadastra_cliente()
+            }
+        })
+        .catch((error)=>{
+            console.log(error)
+            if (error.response.data.Error){
+                Alert.alert('Atenção', error.response.data.Error,
+                    [
+                        {
+                            text: 'OK',
+                            onPress: ()=>{return;}
+                        }
+                    ]
+                )
+            }
+        })
+
+        
+    }
+    cadastra_cliente(){
         let dados_cliente = [
             {
                 nome: this.state.nome,
                 cpf: this.state.cpf,
                 telefone: this.state.telefone,
-                email: this.state.email
-   
+                e_mail: this.state.email,
+                id_usuario: this.state.id_usuario_cadastro,
+                id_empresa: EMPRESA,
+                id_grupo_empresa: GRUPO_EMPRESA,
+                status: true
             }
         ]
-        
-        api.post('api/v1/usuario')
-        
+
+        api.post('api/v1/cliente', dados_cliente)
+        .then((results)=>{
+            if (results.data.Sucesso){
+                this.envia_email()
+                this.props.navigation.navigate('confirma_email', {id_usuario: this.state.id_usuario_cadastro, email: this.state.email, nome:this.state.nome})
+            }
+        })
+        .catch((error)=>{
+            console.log(error.response)
+        })
     }
 
     envia_email(){
@@ -191,7 +232,8 @@ export class CadastrarUsuario extends React.Component {
             {
                 nome: this.state.nome,
                 destinatario: this.state.email,
-                tipo_email: 'confirmacao_email'
+                tipo_email: 'confirmacao_email',
+                id_usuario: this.state.id_usuario_cadastro
             }
         ]
 
@@ -210,7 +252,7 @@ export class CadastrarUsuario extends React.Component {
                 <View style={styles.headerPaginainicial}>
                     <View style={styles.contentHeaderPaginaIinical}>
                         <View style={styles.viewContentHeader}>
-                            <StyledButtonCadastro ativo={true}>
+                            <StyledButtonCadastro ativo={true}  onPress={()=>{this.props.navigation.navigate('cadastro_usuario')}}>
                                 <Feather name="user" size={40} />
                             </StyledButtonCadastro>
                             <StyledTextWhite>Dados Cadastrais</StyledTextWhite>
@@ -219,7 +261,7 @@ export class CadastrarUsuario extends React.Component {
                             !this.state.token ? 
                             (
                                 <View style={styles.viewContentHeader}>
-                                    <StyledButtonCadastro ativo={false}>
+                                    <StyledButtonCadastro ativo={false} onPress={()=>{this.props.navigation.navigate('confirma_email', {id_usuario: this.state.id_usuario_cadastro, email: this.state.email, nome:this.state.nome})}}>
                                         <Feather name="check-circle" size={40} />
                                     </StyledButtonCadastro>
                                     <StyledTextWhite>Confirmar E-mail</StyledTextWhite>

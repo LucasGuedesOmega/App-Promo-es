@@ -108,7 +108,7 @@ export class Login extends React.Component {
 
         })
         .catch((error)=>{
-            
+            console.log(error.response.data)
             if(error.response.data.Error === 'Parametros invalidos'){
                 alert("Login inválido.")
             }else if(error.name === 'AxiosError'){

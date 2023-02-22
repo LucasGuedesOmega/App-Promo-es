@@ -1,5 +1,8 @@
 import React from "react";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import api from "../services/api";
+
 import { Touchable, TouchableOpacity, View } from "react-native";
 import { styles } from "../temas/base";
 import { StyledTituloText, StyledButton, StyledButtonWhite } from "../components/styledComponents";
@@ -10,6 +13,39 @@ export class PaginaInicial extends React.Component {
         super(props);
         this.state = {
             token: null
+        }
+    }   
+
+    async componentDidMount(){
+        await this.verifica_token()
+    }
+
+    async verifica_token(){
+        await AsyncStorage.getItem('token')
+        .then((token)=>{
+            this.setState({
+                token: token
+            })
+        })
+        
+        await this.confere_token()
+    }
+
+    async confere_token(){
+        let login = true;
+
+        if (this.state.token){
+            await api.post(`api/v1/login-token`, { 'token' : this.state.token }, { headers: { Authorization: this.state.token}})
+            .then(()=>{
+                login = false;
+            })
+            .catch((error)=>{
+                console.log(error.response, 'ola')
+            })
+        }
+
+        if (login === false){
+            this.props.navigation.navigate('home')
         }
     }
 

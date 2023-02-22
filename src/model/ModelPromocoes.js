@@ -95,23 +95,7 @@ export class ModelPromocoes extends PureComponent{
             }
         })
         .catch((error)=>{
-            let count_error = 0
-            if(error.name === "AxiosError"){
-                
-                count_error += 1
-                if (count_error > 10){
-                    Alert.alert("Atenção", "Sem conexão com a API.",
-                    [
-                        {
-                            text: "OK",
-                            onPress: ()=>{return;}
-                        }
-                    ]
-                    )
-                }else{
-                    this.get_produto()
-                }
-            }else if (error.response.data.error === 'Signature verification failed'){
+            if (error.response.data.error === 'Signature verification failed'){
                 this.props.navigation.navigate('login')
             }else if(error.response.data.error === 'Token expirado'){
                 this.props.navigation.navigate('login')

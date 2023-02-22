@@ -21,7 +21,8 @@ export class GeraVoucher extends React.Component {
             procurar: '', 
             showToastCounter: 0, 
             token: null,
-            tokenDecode: null
+            tokenDecode: null,
+            contadorError: 0
         }
 
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -76,8 +77,32 @@ export class GeraVoucher extends React.Component {
                     empresa.push(results.data[0])
                 }
             }).catch((error)=>{
-                if(error.name === 'AxiosError'){
-                    erro = true;
+                let count_error = this.state.contadorError;
+                if(error.name === "AxiosError"){
+                    
+                    count_error += 1
+                    this.setState({
+                        contadorError: count_error
+                    })
+                    if (this.state.contadorError === 25){
+                        Alert.alert("Atenção", "Sem conexão com a API.",
+                        [
+                            {
+                                text: "OK",
+                                onPress: ()=>{return;}
+                            }
+                        ]
+                        )
+                    }else{
+                        this.get_empresas()
+                    }
+                    
+                }else if (error.response.data.error === 'Signature verification failed'){
+                    this.props.navigation.navigate('login')
+                }else if(error.response.data.error === 'Token expirado'){
+                    this.props.navigation.navigate('login')
+                }else if(error.response.data.error === 'não autorizado'){
+                    this.props.navigation.navigate('login')
                 }
             })
         }
@@ -85,25 +110,6 @@ export class GeraVoucher extends React.Component {
         await this.setState({
             empresas: empresa
         })
-
-        let contador_erro = 0;
-
-        if(erro === true){
-            contador_erro += 1;
-            if(contador_erro > 10){
-                Alert.alert("Atenção", "Sem conexão com a API.",
-                    [
-                        {
-                            text: "OK",
-                            onPress: ()=>{return;}
-                        }
-                    ]
-                )
-            }else{
-                this.get_empresas()
-            }
-           
-        }
     }
 
     filtrar(text){

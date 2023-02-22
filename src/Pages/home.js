@@ -28,7 +28,6 @@ export class Home extends React.PureComponent {
                 {icon: 'frown'}
             ],
             empresas: null,
-            contadorError:  0,
             contadorClicks: 0
         }
 
@@ -82,7 +81,7 @@ export class Home extends React.PureComponent {
             }
         })
         .catch((error)=>{
-            console.log(error.response)
+            console.log(error.response, 'ola')
             let count_error = this.state.contadorError;
             if(error.name === "AxiosError"){
                 
@@ -91,7 +90,7 @@ export class Home extends React.PureComponent {
                     contadorError: count_error
                 })
                 if (this.state.contadorError === 25){
-                    Alert.alert("AtenÃ§Ã£o", "Sem conexão com a API.",
+                    Alert.alert("Atenção", "Sem conexão com a API.",
                     [
                         {
                             text: "OK",
@@ -102,13 +101,19 @@ export class Home extends React.PureComponent {
                 }else{
                     this.get_empresas()
                 }
-                
-            }else if (error.response.data.error === 'Signature verification failed'){
+            }    
+            if (error.response.data.error === 'Signature verification failed'){
                 this.props.navigation.navigate('login')
+                return;
             }else if(error.response.data.error === 'Token expirado'){
                 this.props.navigation.navigate('login')
-            }else if(error.response.data.error === 'não autorizado'){
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
                 this.props.navigation.navigate('login')
+                return;
+            }else if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
+                this.props.navigation.navigate('login')
+                return;
             }
         })
     }   
