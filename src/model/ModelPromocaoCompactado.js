@@ -85,14 +85,12 @@ export class ModelPromocaoCampact extends React.Component{
 
         await api.post("api/v1/gera-voucher", dados_dict, { headers : {Authorization: this.state.token}})
         .then((results)=>{
-            console.log(results.data)
             if (results.data.Voucher){
                 this.setState({
                     modalVoucher: true,
                     open_modal: false,
                     voucher: results.data.Voucher
                 })
-                console.log(this.state.voucher)
             }
         })
     }

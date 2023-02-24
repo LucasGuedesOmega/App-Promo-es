@@ -142,7 +142,8 @@ export class StyledInputPassword extends React.Component{
         super(props)
         this.onChangeInput = this.onChangeInput.bind(this);
         this.state = {
-            isPassword: true
+            isPassword: true,
+            value: this.props.value
         }
     }
 
@@ -167,12 +168,12 @@ export class StyledInputPassword extends React.Component{
             <View style={styles.contentInputStyledPassword}>
                 <Text style={{marginHorizontal: 5}}>{this.props.children}</Text>
                 <TextInput
-                    onChange={(value)=>{this.onChangeInput(value)}}
+                    onChangeText={(value)=>{this.onChangeInput(value)}}
                     style={styles.textInputStyled}
                     placeholder={this.props.placeholder}
                     placeholderTextColor={styles.placeholderColor.color}
                     secureTextEntry={this.state.isPassword}
-                    value={this.props.value}
+                    value={this.state.value}
                 />
                 <TouchableOpacity onPress={()=>{this.changeEye()}}>
                     <Entypo name={ this.state.isPassword ? "eye" : "eye-with-line"} size={20} style={styles.iconInputStyled}/>

@@ -40,7 +40,7 @@ export class CarrouselPromo extends PureComponent{
         var allPromotions_list = [];
         let hoje = new Date();
         
-        api.get(`/api/v1/promocao?id_empresa=${this.state.tokenDecode.id_empresa}`, { headers : {Authorization:this.state.token}})
+        api.get(`/api/v1/promocao?id_grupo_empresa=${this.state.tokenDecode.id_grupo_empresa}`, { headers : {Authorization:this.state.token}})
         .then((results)=>{
             if (results.data.length > 0){
                 for(var i=0; i<results.data.length;i++){
@@ -70,39 +70,22 @@ export class CarrouselPromo extends PureComponent{
                 
             }
         })
-        .catch((error)=>{
-            console.log(error)
-            let count_error = this.state.contadorError;
-            if(error.name === "AxiosError"){
-                
-                count_error += 1
-                this.setState({
-                    contadorError: count_error
-                })
-                if (this.state.contadorError === 25){
-                    Alert.alert("Atenção", "Sem conexão com a API.",
-                    [
-                        {
-                            text: "OK",
-                            onPress: ()=>{return;}
-                        }
-                    ]
-                    )
-                }else{
-                    this.get_promotion()
-                }
-            }
-            if (error.response.data.error === 'Signature verification failed'){
+        .catch(async (error)=>{
+            if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
                 this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if (error.response.data.error === 'Signature verification failed'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
                 return;
             }else if(error.response.data.error === 'Token expirado'){
                 this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
                 return;
             }else if(error.response.data.error === 'Token expirado'){
                 this.props.navigation.navigate('login')
-                return;
-            }else if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
-                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
                 return;
             }
         })

@@ -14,6 +14,10 @@ import { ModelPromocaoCampact } from "./ModelPromocaoCompactado";
 import jwtDecode from "jwt-decode";
 
 import Barcode from "react-native-barcode-builder";
+
+import RNPermissions, { PERMISSIONS } from 'react-native-permissions';
+import Geolocation from 'react-native-geolocation-service';
+
 export class ModelEmpresas extends React.PureComponent{
     constructor(props){
         super(props);
@@ -26,12 +30,18 @@ export class ModelEmpresas extends React.PureComponent{
             modalVoucher: false,
             voucher: null,
             token: null, 
-            tokenDecodde: null
+            tokenDecodde: null,
+            permissaoLocalizacao: false,
+            latitude_atual: null, 
+            longitude_atual: null
         }
 
     }   
 
     async componentDidMount(){
+        await this.pedePermissao()
+        await this.getLocalizacaoAtual()
+
         await AsyncStorage.getItem('token')
         .then((token)=>{
             this.setState({
@@ -46,62 +56,128 @@ export class ModelEmpresas extends React.PureComponent{
         }
     }
 
-    async get_promocoes(){
-        let empresa_promocao = [];
-        await api.get(`api/v1/empresas-promocao?id_empresa=${this.props.item.item.id_empresa}`, { headers : {Authorization: this.state.token}})
-        .then((results)=>{
-            if (results.data.length > 0){
-                for (let i = 0; i < results.data.length; i++){
-                    if (results.data[i].status){
-                        empresa_promocao.push(results.data[i])
-                    }
-                }
+    async pedePermissao(){
+        if (Platform.OS === 'android') {
+            const granted = await RNPermissions.request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+            if (granted === 'blocked'){
+                Linking.openSettings();
+            }
+
+            if (granted === 'granted') {
+                console.log('Permissão de localização concedida.');
                 this.setState({
-                    empresas_promocao: empresa_promocao
+                    permissaoLocalizacao: true
                 })
             }
-        })
-        .catch((error)=>{
-            console.log(error)
-        })
+        }
+    }
+
+    getDistanceFromLatLonInKm(position1, position2) {
+        "use strict";
+        var deg2rad = function (deg) { return deg * (Math.PI / 180); },
+            R = 6371,
+            dLat = deg2rad(position2.lat - position1.lat),
+            dLng = deg2rad(position2.lng - position1.lng),
+            a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(deg2rad(position1.lat))
+                * Math.cos(deg2rad(position1.lat))
+                * Math.sin(dLng / 2) * Math.sin(dLng / 2),
+            c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return ((R * c *1000).toFixed());
+    }
+
+    async getLocalizacaoAtual(){
+        if (this.state.permissaoLocalizacao){
+            Geolocation.getCurrentPosition(
+                (position)=>{
+                    this.setState({
+                        latitude_atual: position.coords.latitude,
+                        longitude_atual: position.coords.longitude,
+                    })
+                },
+                (error)=>{
+                    console.log(error)
+                }
+            );
+        }
         
-        if (this.state.empresas_promocao && this.props.id_promocao === null){
-            let promocoes = [];
-            let hoje = new Date();
-            for(let i = 0; i < this.state.empresas_promocao.length; i++){
-                await api.get(`api/v1/promocao?id_promocao=${this.state.empresas_promocao[i].id_promocao}`, { headers : {Authorization: this.state.token}})
-                .then(async (results)=>{
-                    if (results.data.length > 0){
-                        for (let i = 0; i < results.data.length; i++){
-                            if (results.data[i].status === true){
-                                await this.compare_days_of_week(results.data[i])
-    
-                                let data_fim_promo = results.data[i].data_fim;
-                                let data_ini_promo = results.data[i].data_ini;
-                                let data_fim = new Date(data_fim_promo.split('/').reverse().join('/'))
-                                let data_ini = new Date(data_ini_promo.split('/').reverse().join('/'))
-                                
-                                if(this.state.semana_ === true && data_fim > hoje && data_ini < hoje && results.data[i].status === true){
-                                    promocoes.push(results.data[i])
+    }
+
+    async get_promocoes(){
+        var distancia = this.getDistanceFromLatLonInKm(
+            {lat: this.state.latitude_atual, lng: this.state.longitude_atual},
+            {lat: this.props.item.item.latitude, lng: this.props.item.item.longitude}    
+        )
+        let promocoes = [];
+        let hoje = new Date();
+        let empresa_promocao = [];
+
+        if (distancia < 100){
+            
+            await api.get(`api/v1/empresas-promocao?id_empresa=${this.props.item.item.id_empresa}`, { headers : {Authorization: this.state.token}})
+            .then((results)=>{
+                if (results.data.length > 0){
+                    for (let i = 0; i < results.data.length; i++){
+                        if (results.data[i].status){
+                            empresa_promocao.push(results.data[i])
+                        }
+                    }
+                    this.setState({
+                        empresas_promocao: empresa_promocao
+                    })
+                }
+            })
+            .catch((error)=>{
+                console.log(error)
+            })
+            
+            if (this.state.empresas_promocao && this.props.id_promocao === null){
+                for(let i = 0; i < this.state.empresas_promocao.length; i++){
+                    await api.get(`api/v1/promocao?id_promocao=${this.state.empresas_promocao[i].id_promocao}`, { headers : {Authorization: this.state.token}})
+                    .then(async (results)=>{
+                        if (results.data.length > 0){
+                            for (let i = 0; i < results.data.length; i++){
+                                if (results.data[i].status === true){
+                                    await this.compare_days_of_week(results.data[i])
+        
+                                    let data_fim_promo = results.data[i].data_fim;
+                                    let data_ini_promo = results.data[i].data_ini;
+                                    let data_fim = new Date(data_fim_promo.split('/').reverse().join('/'))
+                                    let data_ini = new Date(data_ini_promo.split('/').reverse().join('/'))
+                                    
+                                    if(this.state.semana_ === true && data_fim > hoje && data_ini < hoje && results.data[i].status === true){
+                                        promocoes.push(results.data[i])
+                                    }
                                 }
                             }
                         }
-                    }
-                })
-                .catch((error)=>{
-                    console.log(error)
-                })
+                    })
+                    .catch((error)=>{
+                        console.log(error)
+                    })
+                }
+
+            }else if (this.state.empresas_promocao && this.props.id_promocao !== null){
+                this.get_voucher()
             }
+
             if (promocoes.length > 0){
                 this.setState({
                     promocoes: promocoes,
                     modalVisible: true
                 })
             }else{
-                ToastAndroid.show("Está empresa não tem promoções.", ToastAndroid.LONG);
-            }   
-        }else if (this.state.empresas_promocao && this.props.id_promocao !== null){
-            this.get_voucher()
+                ToastAndroid.show("Esse posto não tem promoções.", ToastAndroid.LONG);
+            }  
+        }else{
+            Alert.alert("Atenção", "Você precisa estar a menos de 100 metros do posto para continuar.",
+                [
+                    {
+                        text: "OK",
+                        onPress: ()=>{return;}
+                    }
+                ]
+            )
         }
     }
     
@@ -162,6 +238,7 @@ export class ModelEmpresas extends React.PureComponent{
                     <View style={styles.colunaModelEmpresaInfo}>
                         <Text style={styles.textInfo}> {this.props.item.item.razao_social}</Text>
                         <TextInputMask type={"cnpj"} editable={false} style={styles.textInfo} value={this.props.item.item.cnpj}/>
+                        <Text style={styles.textInfo} >{`${this.props.item.item.endereco}, ${this.props.item.item.numero} - ${this.props.item.item.bairro} - ${this.props.item.item.cidade} `}</Text>
                     </View>
                 </TouchableOpacity>
                 <Modal animationType="slide" transparent={true} visible={this.state.modalVisible} onRequestClose={()=>{this.setState({modalVisible: false})}} >

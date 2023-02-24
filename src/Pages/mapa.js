@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
 import { styles } from "../temas/base";
 
-import { Platform, View, Linking, Image } from 'react-native';
+import { Platform, View, Linking, Modal, TouchableOpacity, Text, Alert, ToastAndroid, FlatList} from 'react-native';
 import RNPermissions, { PERMISSIONS } from 'react-native-permissions';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { Marker } from 'react-native-maps';
@@ -12,6 +12,9 @@ import MapView, { Marker } from 'react-native-maps';
 import MarkerUser from '../assets/marker-user.png'
 import MarkerGasStation from '../assets/marker-gas-station.png'
 import { Cabecalho } from "../components";
+import { ModelPromocaoCampact } from "../model/ModelPromocaoCompactado";
+
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 export class Mapa extends React.Component{
     constructor(props){
@@ -24,7 +27,10 @@ export class Mapa extends React.Component{
             token: null,
             tokenDecode: null,
 
-            empresas: []
+            empresas: [],
+            promocoes: [],
+            modalVisible: false,
+            promocaoEmpresa: null
         };
 
         this.pedePermissao = this.pedePermissao.bind(this);
@@ -87,16 +93,139 @@ export class Mapa extends React.Component{
                     empresas: results.data
                 })
             }
-
-            console.log(this.state.empresas, 'olaaaaaaaaaa')
         })
         .catch(async (error)=>{
             console.log(error.response)
             if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
                 this.props.navigation.navigate('login')
-                await AsyncStorage.setItem("token", null)
+                await AsyncStorage.removeItem('token')
+                return;
+            } else if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if (error.response.data.error === 'Signature verification failed'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
                 return;
             }
+        })
+    }
+    
+    getDistanceFromLatLonInKm(position1, position2) {
+        "use strict";
+        var deg2rad = function (deg) { return deg * (Math.PI / 180); },
+            R = 6371,
+            dLat = deg2rad(position2.lat - position1.lat),
+            dLng = deg2rad(position2.lng - position1.lng),
+            a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(deg2rad(position1.lat))
+                * Math.cos(deg2rad(position1.lat))
+                * Math.sin(dLng / 2) * Math.sin(dLng / 2),
+            c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return ((R * c *1000).toFixed());
+    }
+
+    async markerPostoClicked(value){
+
+        let promocoes = [];
+
+        var distancia = this.getDistanceFromLatLonInKm(
+            {lat: this.state.latitude_atual, lng: this.state.longitude_atual},
+            {lat: value.latitude, lng: value.longitude}    
+        )
+        
+        if(distancia < 100){
+            await api.get(`api/v1/empresas-promocao?id_empresa=${value.id_empresa}`, { headers : {Authorization: this.state.token}})
+            .then((results)=>{
+                promocoes = results.data
+            })
+            .catch(async (error)=>{
+                if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
+                    this.props.navigation.navigate('login')
+                    await AsyncStorage.removeItem('token')
+                    return;
+                }else if (error.response.data.error === 'Signature verification failed'){
+                    this.props.navigation.navigate('login')
+                    await AsyncStorage.removeItem('token')
+                    return;
+                }else if(error.response.data.error === 'Token expirado'){
+                    this.props.navigation.navigate('login')
+                    await AsyncStorage.removeItem('token')
+                    return;
+                }else if(error.response.data.error === 'Token expirado'){
+                    this.props.navigation.navigate('login')
+                    await AsyncStorage.removeItem('token')
+                    return;
+                }
+            })
+            
+            if (promocoes.length < 1){
+                ToastAndroid.show("Esse posto não tem promoções.", ToastAndroid.LONG);
+                return;
+            }
+            
+            await this.get_promocoes(promocoes);
+
+            this.setState({
+                modalVisible: true,
+                promocaoEmpresa: value
+            })
+
+
+        }else{
+            Alert.alert("Atenção", "Você precisa estar a menos de 100 metros do posto para continuar.",
+                [
+                    {
+                        text: "OK",
+                        onPress: ()=>{return;}
+                    }
+                ]
+            )
+        }
+        
+    }
+
+    async get_promocoes(id_promocoes){
+        let promocoes = [];
+        for(let i = 0; i < id_promocoes.length; i ++){
+            await api.get(`api/v1/promocao?id_promocao=${id_promocoes[i].id_promocao}`, {headers: {Authorization: this.state.token}})
+            .then((results)=>{
+                if(results.data.length > 0){
+                    promocoes.push(results.data[i])
+                }
+            })
+            .catch(async (error)=>{
+                if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
+                    this.props.navigation.navigate('login')
+                    await AsyncStorage.removeItem('token')
+                    return;
+                }else if (error.response.data.error === 'Signature verification failed'){
+                    this.props.navigation.navigate('login')
+                    await AsyncStorage.removeItem('token')
+                    return;
+                }else if(error.response.data.error === 'Token expirado'){
+                    this.props.navigation.navigate('login')
+                    await AsyncStorage.removeItem('token')
+                    return;
+                }else if(error.response.data.error === 'Token expirado'){
+                    this.props.navigation.navigate('login')
+                    await AsyncStorage.removeItem('token')
+                    return;
+                }
+            })
+        } 
+
+        this.setState({
+            promocoes: promocoes
         })
     }
 
@@ -137,11 +266,38 @@ export class Mapa extends React.Component{
                                         .replace(/^(\d{2})(\d{3})?(\d{3})?(\d{4})?(\d{2})?/, "$1.$2.$3/$4-$5")}
                                         image={MarkerGasStation}
                                         key={index}
+                                        onPress={()=>{this.markerPostoClicked(value)}}
                                     />
                                 ))
                             }
                         </MapView>
                     </View>
+                    <Modal animationType="slide" transparent={true} visible={this.state.modalVisible} onRequestClose={()=>{this.setState({modalVisible: false})}} >
+                        <View style={styles.centeredModalMenu}>
+                            <View style={styles.modalView}>
+                                <View style={styles.headerModalMenu}>
+                                    <View style={styles.headerModalMenuVoltar}>
+                                        <TouchableOpacity style={styles.buttonVoltarModalMenu} onPress={()=>{this.setState({modalVisible: false})}}>
+                                            <Ionicons name="chevron-back-sharp" size={25} style={styles.backspaceIconModelMenu}/>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.headerModalMenuTitulo}>
+                                        <Text style={styles.headerModalTextTitulo}>Promoções</Text>
+                                    </View>
+                                </View>
+                                <View style={styles.bodyModalMenu}>
+                                    <View style={styles.viewListaPromocao}>
+                                        <FlatList
+                                            data={this.state.promocoes}
+                                            style={styles.listModalMenu}
+                                            renderItem={(items)=>(<ModelPromocaoCampact navigation={this.props.navigation} empresa={this.state.promocaoEmpresa} items={items}/>)}
+                                        />
+                                    </View>
+                                </View>
+
+                            </View>
+                        </View> 
+                    </Modal>
                 </View>
             );
         }else{

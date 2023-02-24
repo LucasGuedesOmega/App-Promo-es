@@ -241,7 +241,6 @@ export const styles = StyleSheet.create({
     },
     textInfo: {
         color: SECONDCONTENTCOLOR,
-        margin: '1%'
     },
     btGeraVoucher: {
         backgroundColor: BUTTONSCOLORS,
@@ -657,9 +656,5 @@ export const styles = StyleSheet.create({
     },
     mapa:{
         flex: 1
-    },
-    imageMarkerUser: {
-        width: '5px',
-        height: '5px'
     }
 });

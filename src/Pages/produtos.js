@@ -47,7 +47,7 @@ export class Produtos extends React.Component{
     }
 
     async get_produtos(){
-        api.get(`/api/v1/integracao/produto/lista?id_empresa=${this.state.tokenDecode.id_empresa}`, { headers: { Authorization:this.state.token}})
+        api.get(`/api/v1/integracao/produto/lista?id_grupo_empresa=${this.state.tokenDecode.id_grupo_empresa}`, { headers: { Authorization:this.state.token}})
         .then((results)=>{
             if (results.data.length > 0){
                 this.setState({

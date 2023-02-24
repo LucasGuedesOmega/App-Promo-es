@@ -10,9 +10,8 @@ import Feather from "react-native-vector-icons/Feather";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import jwtDecode from "jwt-decode";
 import api from "../services/api";
-
-const EMPRESA = 4;   
-const GRUPO_EMPRESA = 1;
+  
+const GRUPO_EMPRESA = 6;
 
 export class CadastrarUsuario extends React.Component {
     _isMounted = false;
@@ -85,6 +84,7 @@ export class CadastrarUsuario extends React.Component {
         this.setState({
             cpf: value
         })
+        console.log(this.state.cpf)
     }
 
     onChangeCheckBox(){
@@ -169,7 +169,7 @@ export class CadastrarUsuario extends React.Component {
                 status: true,
                 user_admin: false,
                 user_app: true,
-                id_empresa: EMPRESA,
+                admin_posto: false,
                 id_grupo_empresa: GRUPO_EMPRESA,
                 cpf: this.state.cpf
             }
@@ -209,12 +209,10 @@ export class CadastrarUsuario extends React.Component {
                 telefone: this.state.telefone,
                 e_mail: this.state.email,
                 id_usuario: this.state.id_usuario_cadastro,
-                id_empresa: EMPRESA,
                 id_grupo_empresa: GRUPO_EMPRESA,
                 status: true
             }
         ]
-
         api.post('api/v1/cliente', dados_cliente)
         .then((results)=>{
             if (results.data.Sucesso){

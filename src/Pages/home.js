@@ -80,39 +80,23 @@ export class Home extends React.PureComponent {
                 })
             }
         })
-        .catch((error)=>{
+        .catch(async (error)=>{
             console.log(error.response, 'ola')
-            let count_error = this.state.contadorError;
-            if(error.name === "AxiosError"){
-                
-                count_error += 1
-                this.setState({
-                    contadorError: count_error
-                })
-                if (this.state.contadorError === 25){
-                    Alert.alert("Atenção", "Sem conexão com a API.",
-                    [
-                        {
-                            text: "OK",
-                            onPress: ()=>{return;}
-                        }
-                    ]
-                    )
-                }else{
-                    this.get_empresas()
-                }
-            }    
-            if (error.response.data.error === 'Signature verification failed'){
+            if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
                 this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if (error.response.data.error === 'Signature verification failed'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
                 return;
             }else if(error.response.data.error === 'Token expirado'){
                 this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
                 return;
             }else if(error.response.data.error === 'Token expirado'){
                 this.props.navigation.navigate('login')
-                return;
-            }else if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
-                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
                 return;
             }
         })
