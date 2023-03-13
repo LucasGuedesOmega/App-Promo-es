@@ -1,64 +1,69 @@
 import React from "react";
-import { View, TouchableOpacity, Text, Button } from "react-native";
-import Carousel, { Pagination } from "react-native-snap-carousel";
-import { ModelValores } from "../model/ModelValores";
+import { View, TouchableOpacity, Text } from "react-native";
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 import { styles } from "../temas/base";
 
+import api from "../services/api";
+import jwtDecode from "jwt-decode";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export class Cabecalho extends React.Component{
     constructor(props){
-        super(props)
+        super(props);
+        console.log(props)
         this.state = {
             activeIndexValores: 0,
-            valores: [
-                {value: "R$ 0.00", titulo: 'CashBack'},
-                {value: "R$ 0.01", titulo: 'CashBack'},
-                {value: "R$ 0.02", titulo: 'CashBack'},
-                {value: "R$ 0.03", titulo: 'CashBack'},
-                {value: "R$ 0.04", titulo: 'CashBack'},
-                {value: "R$ 0.05", titulo: 'CashBack'},
-            ],
+            valor_cashback: 0.00,
+            token: null,
+            tokenDecode: null
         }
     }
 
-    pagination_valores(){
-        return (
-            <Pagination
-                dotsLength={this.state.valores.length}
-                activeDotIndex={this.state.activeIndexValores}
-                containerStyle={{backgroundColor: 'transparent', maxHeight: '2%'}}
-                dotStyle={styles.dotStyle}
-                dotContainerStyle={{width: '2%', maxHeight: '0.01%', backgroundColor: 'red'}}
-                inactiveDotStyle={styles.inactiveDotStyle}
-                inactiveDotOpacity={0.4}
-                inactiveDotScale={0.6}
-                ref={(c)=>{this._pagination=c;}}
-            />
-        )
+    async componentDidMount(){
+        await AsyncStorage.getItem('token')
+        .then((token)=>{
+            this.setState({
+                tokenDecode: jwtDecode(token),
+                token: token
+            })
+        })
+
+        this.get_valor_cashback();
+    }
+
+    get_valor_cashback(){
+        let cashback = 0;
+        api.get(`/api/v1/vendas?id_usuario=${this.state.tokenDecode.id_usuario}&tipo_desconto=CASHBACK`, {headers: { Authorization : this.state.token}})
+        .then((results)=>{
+            for(let i = 0; i < results.data.length ; i ++){
+                console.log(results.data[i])
+                cashback += results.data[i].desconto
+            }
+            this.setState({
+                valor_cashback: cashback
+            })
+        })
     }
 
     render(){
         return (
             <View style={styles.cabecalho}>
                 <View style={styles.cabecalhoSection}>
-                    <Carousel
-                        loop
-                        layout="default"
-                        ref={(c)=>{this._carousel=c;}} 
-                        nativeID="carousel_valores"
-                        sliderWidth={100} 
-                        itemWidth={100}
-                        data={this.state.valores} 
-                        autoplay={true}
-                        autoplayDelay={3000}
-                        autoplayInterval={3000}
-                        renderItem={({item})=> <ModelValores items={item} />}
-                        onSnapToItem={(index)=>{this.setState({activeIndexValores: index})}}
-                    />
-                    {this.pagination_valores()}
+                    <View style={styles.colunaModel}>
+                        <View style={styles.linhaModel}>
+                            <Text style={styles.modelValoresText}>
+                                Cashback
+                            </Text>
+                        </View>
+                        <View style={styles.linhaModel}>
+                            <Text style={styles.modelValoresText}>
+                                R$ {this.state.valor_cashback}
+                            </Text>
+                        </View>
+                    </View>
                 </View>
                 <View style={styles.cabecalhoSection2}>
                     <TouchableOpacity style={styles.buttonCart}>

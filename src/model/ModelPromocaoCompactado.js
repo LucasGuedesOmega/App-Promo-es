@@ -11,6 +11,7 @@ import jwtDecode from "jwt-decode";
 
 import Barcode from "react-native-barcode-builder";
 
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 export class ModelPromocaoCampact extends React.Component{
     constructor(props){
         super(props);
@@ -123,6 +124,9 @@ export class ModelPromocaoCampact extends React.Component{
                         <Text style={styles.textModalMenu}>
                             Válido de {this.format_date(this.props.items.item.data_ini)} até {this.format_date(this.props.items.item.data_fim)}
                         </Text>
+                    </View>
+                    <View style={styles.colunaModelMenuIcon}>
+                        <FontAwesome5 name="chevron-right" style={styles.handPointUp} size={25}/>
                     </View>
                 </TouchableOpacity>
                 <Modal animationType="slide" transparent={true} visible={this.state.open_modal} onRequestClose={()=>{this.setState({open_modal: false})}}>

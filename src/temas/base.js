@@ -100,6 +100,9 @@ export const styles = StyleSheet.create({
         backgroundColor: BUTTONSCOLORS,
         marginBottom: 70
     },
+    paginationCarousel:{
+        flex: 0.5
+    },  
     inactiveDotStyle: {
         backgroundColor: SECONDCONTENTCOLOR,
     },
@@ -158,6 +161,12 @@ export const styles = StyleSheet.create({
         flex: 3,
         paddingHorizontal: "2.7%"
     },
+    btImagemPromo:{
+        flex: 1,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
     viewButtons:{
         flex: 1
     },
@@ -172,7 +181,14 @@ export const styles = StyleSheet.create({
         flex: 1
     },
     carouselPromo: {
-        flex: 1
+        flex: 1,
+        width: '100%',
+        alignItems:'center',
+        justifyContent: 'center'
+    },
+    textSemPromoHome: {
+        width: '100%',
+        textAlign: 'center'
     },
     cabecalhoModal: {
         flex: 2,
@@ -241,6 +257,12 @@ export const styles = StyleSheet.create({
     },
     textInfo: {
         color: SECONDCONTENTCOLOR,
+        textAlign: "center"
+    },
+    textTituloPromo: {
+        color: SECONDCONTENTCOLOR,
+        textAlign: 'center',
+        fontSize: 20
     },
     btGeraVoucher: {
         backgroundColor: BUTTONSCOLORS,
@@ -287,6 +309,9 @@ export const styles = StyleSheet.create({
     backspaceIcon: {
         margin: 2
     },
+    handPointUp:{
+        color: TEXTCOLOR
+    },
     headerVoucher:{
         flex: 2,
         marginBottom: 3,
@@ -314,16 +339,27 @@ export const styles = StyleSheet.create({
         marginTop: 2
     },
     linhaModelEmpresa: {
+        flex: 1,
         flexDirection: "row",
-        paddingVertical: 20,
-        borderBottomColor: INPUTSCOLOR,
-        borderBottomWidth: 1
+        margin: '1%',
+        padding: 10,
+        backgroundColor: THIRDCONTENTCOLOR,
+        borderRadius: 8,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+
+        elevation: 5,
     },
     colunaModelEmpresaInfo:{
         flex: 3,
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'flex-start'
+        alignItems: 'center'
     },
     colunaModelEmpresaIcone:{
         flex: 1,
@@ -366,7 +402,7 @@ export const styles = StyleSheet.create({
     centeredModalMenu: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     modalView: {
         flexDirection: 'column',
@@ -390,7 +426,8 @@ export const styles = StyleSheet.create({
     bodyModalMenu: {
         flex: 7,
         width: '100%',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        backgroundColor: TITLESCOLOR
     },
     textModalMenuTitulo: {
         color: TEXTCOLOR,
@@ -398,13 +435,12 @@ export const styles = StyleSheet.create({
     },
     textModalMenu: {
         color: TEXTCOLOR,
-        fontSize: 15
+        fontSize: 15,
+        textAlign: 'center'
     },
     listModalMenu: {
         padding: 10,
         height: '100%',
-        borderTopWidth: 2,
-        borderTopColor: INPUTSCOLOR
     },
     headerModalMenuTitulo:{
         flex: 2,
@@ -431,7 +467,7 @@ export const styles = StyleSheet.create({
         flex: 3,
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'flex-start',
+        alignItems: 'center',
     },
     colunaModelMenuImage: {
         flex: 1,
@@ -440,6 +476,12 @@ export const styles = StyleSheet.create({
         alignItems: 'flex-start',
         marginRight: '5%'
     },
+    colunaModelMenuIcon:{
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     imgPromoMenu: {
         width: '100%',
         height: '100%',
@@ -447,10 +489,19 @@ export const styles = StyleSheet.create({
     linhaModelMenu: {
         flex: 1,
         flexDirection: "row",
-        marginVertical: '1%',
-        borderBottomWidth: 1,
-        borderBottomColor: INPUTSCOLOR,
-        paddingBottom: 10
+        margin: '1%',
+        padding: 10,
+        backgroundColor: THIRDCONTENTCOLOR,
+        borderRadius: 8,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+
+        elevation: 5,
     },
     textModelProdutos: {
         color: TEXTCOLOR
@@ -464,9 +515,21 @@ export const styles = StyleSheet.create({
     linhaModelProduto:{
         flex: 1,
         flexDirection: 'row',
-        borderBottomWidth: 1,
-        borderBottomColor: INPUTSCOLOR,
-        paddingVertical: 25,
+        paddingVertical: '5%',
+        margin: '2%',
+        padding: 10,
+        height: 100,
+        backgroundColor: THIRDCONTENTCOLOR,
+        borderRadius: 8,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+
+        elevation: 5,
     },
     contentModelTransparent: {
         flex: 1,
@@ -656,5 +719,12 @@ export const styles = StyleSheet.create({
     },
     mapa:{
         flex: 1
-    }
+    },
+    corpoTransparente: {
+        flex: 5,
+        backgroundColor: CONTENTCOLORTRASPARENTVOUCHER,
+        borderTopLeftRadius: 25,
+        borderTopRightRadius: 25,
+        width: '100%',
+    },
 });

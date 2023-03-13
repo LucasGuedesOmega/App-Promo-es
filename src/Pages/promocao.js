@@ -1,6 +1,6 @@
 import React from "react";
 
-import { View, BackHandler, Text, FlatList, ToastAndroid, TextInput } from "react-native";
+import { View, BackHandler, Text, FlatList, ToastAndroid, TextInput, ScrollView } from "react-native";
 
 import { styles } from "../temas/base";
 import { ModelEmpresas } from "../model/ModelEmpresas";
@@ -118,12 +118,17 @@ export class Promocao extends React.PureComponent{
                         <TextInput placeholder="Digite para pesquisar" autoCapitalize="none" onChangeText={(text)=>{this.filtrar(text)}} style={styles.inputSearch}/>
                     </View>
                 </View>
-                <View style={styles.corpo}>
-                    <FlatList
-                        data={this.state.empresas}
-                        navigation={this.props.navigation}
-                        renderItem={(items)=><ModelEmpresas id_promocao={null} dados_dict={this.state.dados_voucher} navigation={this.props.navigation} item={items}/>}
-                    />
+                <View style={styles.corpoTransparente}>
+                    <View style={styles.viewScrollSection}>
+                        <View style={styles.viewScrollSectionBody}>
+                            <FlatList
+                                data={this.state.empresas}
+                                navigation={this.props.navigation}
+                                style={styles.flatlistEmpresa}
+                                renderItem={(items)=><ModelEmpresas id_promocao={null} dados_dict={this.state.dados_voucher} navigation={this.props.navigation} item={items}/>}
+                            />
+                        </View>
+                    </View>
                 </View>
             </View>
         );

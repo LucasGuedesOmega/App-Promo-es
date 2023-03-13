@@ -117,7 +117,7 @@ export class Produtos extends React.Component{
                         <TextInput placeholder="Digite para pesquisar" autoCapitalize="none" onChangeText={(text)=>{this.filtrar(text)}} style={styles.inputSearch}/>
                     </View>
                 </View>
-                <View style={styles.corpo}>
+                <View style={styles.corpoTransparente}>
                     <FlatList
                         data={this.state.produtos}
                         navigation={this.props.navigation}

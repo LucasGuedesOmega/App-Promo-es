@@ -12,6 +12,7 @@ import { CarrouselPromo } from "../components/carouselPromocoes";
 // import { ModelPostos } from "../model/ModelPostos";
 
 
+
 export class Home extends React.PureComponent {
     _isMounted = false;
     constructor(props){
@@ -28,7 +29,8 @@ export class Home extends React.PureComponent {
                 {icon: 'frown'}
             ],
             empresas: null,
-            contadorClicks: 0
+            contadorClicks: 0,
+            carregando: false
         }
 
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -44,7 +46,7 @@ export class Home extends React.PureComponent {
             })
         })
 
-        this.get_empresas()
+        await this.get_empresas()
 
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
@@ -66,12 +68,16 @@ export class Home extends React.PureComponent {
             ToastAndroid.show("Toque mais uma vez para sair.", ToastAndroid.LONG);
         }else if (count_clicks === 2){
             BackHandler.exitApp();
+
+            this.setState({
+                contadorClicks: 0
+            })
         }
         return true;
     }
 
-    get_empresas(){
-        api.get(`/api/v1/empresa?id_grupo_empresa=${this.state.tokenDecode.id_grupo_empresa}`, {headers: { Authorization: this.state.token}})
+    async get_empresas(){
+        await api.get(`/api/v1/empresa?id_grupo_empresa=${this.state.tokenDecode.id_grupo_empresa}`, {headers: { Authorization: this.state.token}})
         .then((results)=>{
             if (results.data.length > 0){
                 
@@ -120,18 +126,6 @@ export class Home extends React.PureComponent {
                                 />
                             </View>
                         </View>
-                        {/* <View style={styles.viewScrollSection}>
-                            <View style={styles.viewScrollSectionHeader}>
-                                <Text style={styles.scrollTextTitulo}>Postos</Text>
-                            </View>
-                            <View style={styles.viewScrollSectionBody}>
-                                <FlatList 
-                                    data={this.state.empresas}
-                                    horizontal={true}
-                                    renderItem={({item})=><ModelPostos items={item} />}
-                                />
-                            </View>
-                        </View> */}
                         <View style={styles.viewScrollSection}>
                             <View style={styles.viewScrollSectionHeader}>
                                 <Text style={styles.scrollTextTitulo}>Promoções do dia</Text>

@@ -146,7 +146,9 @@ export class Mapa extends React.Component{
         if(distancia < 100){
             await api.get(`api/v1/empresas-promocao?id_empresa=${value.id_empresa}`, { headers : {Authorization: this.state.token}})
             .then((results)=>{
-                promocoes = results.data
+                if(results.data[0].status){
+                    promocoes = results.data
+                }
             })
             .catch(async (error)=>{
                 if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){

@@ -152,10 +152,10 @@ export class ModelPromocoes extends PureComponent{
         return(
             <View style={styles.viewImgPromo}>
                 <View style={{flex: 1}}>
-                    <Text style={styles.textInfo}>{this.props.items.titulo}</Text>
+                    <Text style={styles.textTituloPromo}>{this.props.items.titulo}</Text>
                 </View>
                 <View style={{flex: 45}}>
-                    <TouchableOpacity onPress={()=>{this.openModal()}}>
+                    <TouchableOpacity style={styles.btImagemPromo} onPress={()=>{this.openModal()}}>
                         <Image source={{uri: `${this.props.items.imagem}`}} style={styles.imgPromo}/>
                     </TouchableOpacity>
                 </View>

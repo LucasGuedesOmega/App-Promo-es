@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import api from "../services/api";
-import { View, Alert } from "react-native";
+import { View, Text } from "react-native";
 import { styles } from "../temas/base";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import jwtDecode from "jwt-decode";
@@ -23,26 +23,27 @@ export class CarrouselPromo extends PureComponent{
         this.compare_days_of_week = this.compare_days_of_week.bind(this);
     }
 
-    componentDidMount(){
-        AsyncStorage.getItem('token')
+    async componentDidMount(){
+        await AsyncStorage.getItem('token')
         .then((token)=>{
             this.setState({
                 tokenDecode: jwtDecode(token),
                 token: token
-            }, (()=>{
-                this.get_promotion()
-            }))
+            })
+            
         })
+        await this.get_promotion()
     }
 
-    get_promotion(){
+    async get_promotion(){
         var promotion_list = [];
         var allPromotions_list = [];
         let hoje = new Date();
         
-        api.get(`/api/v1/promocao?id_grupo_empresa=${this.state.tokenDecode.id_grupo_empresa}`, { headers : {Authorization:this.state.token}})
+        await api.get(`/api/v1/promocao?id_grupo_empresa=${this.state.tokenDecode.id_grupo_empresa}`, { headers : {Authorization:this.state.token}})
         .then((results)=>{
             if (results.data.length > 0){
+                
                 for(var i=0; i<results.data.length;i++){
                     this.compare_days_of_week(results.data[i])
 
@@ -58,6 +59,7 @@ export class CarrouselPromo extends PureComponent{
                         allPromotions_list.push(results.data[i])
                     }
                 }
+
                 if(this.props.semana === true){
                     this.setState({
                         promotions: allPromotions_list
@@ -144,12 +146,13 @@ export class CarrouselPromo extends PureComponent{
                 inactiveDotOpacity={0.4}
                 inactiveDotScale={0.6}
                 ref={(c)=>{this._pagination2=c;}}
+                style={styles.paginationCarousel}
             />
         )
     }
 
     render(){
-        return(
+        return this.state.promotions.length > 0 ? (
             <View style={styles.carouselPromo}>
                 <Carousel 
                     layout="default"
@@ -160,9 +163,14 @@ export class CarrouselPromo extends PureComponent{
                     data={this.state.promotions}
                     renderItem={({item})=> <ModelPromocoes semana={this.props.semana} empresas={this.props.empresas} navigation={this.props.navigation} items={item} />}
                     onSnapToItem={(index)=>{this.setState({indexPromotions: index})}}
+                    style={styles.carouselPromo}
                 />
                 {this.pagination_imagens()}
             </View>
-        );
+        ):(
+            <View style={styles.carouselPromo}>
+                <Text style={styles.textSemPromoHome}>Sem promoções para hoje.</Text>
+            </View>
+        )
     }
 }

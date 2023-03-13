@@ -17,6 +17,7 @@ import Barcode from "react-native-barcode-builder";
 
 import RNPermissions, { PERMISSIONS } from 'react-native-permissions';
 import Geolocation from 'react-native-geolocation-service';
+import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 
 export class ModelEmpresas extends React.PureComponent{
     constructor(props){
@@ -134,11 +135,11 @@ export class ModelEmpresas extends React.PureComponent{
             if (this.state.empresas_promocao && this.props.id_promocao === null){
                 for(let i = 0; i < this.state.empresas_promocao.length; i++){
                     await api.get(`api/v1/promocao?id_promocao=${this.state.empresas_promocao[i].id_promocao}`, { headers : {Authorization: this.state.token}})
-                    .then(async (results)=>{
+                    .then((results)=>{
                         if (results.data.length > 0){
                             for (let i = 0; i < results.data.length; i++){
                                 if (results.data[i].status === true){
-                                    await this.compare_days_of_week(results.data[i])
+                                    this.compare_days_of_week(results.data[i])
         
                                     let data_fim_promo = results.data[i].data_fim;
                                     let data_ini_promo = results.data[i].data_ini;
@@ -159,16 +160,21 @@ export class ModelEmpresas extends React.PureComponent{
 
             }else if (this.state.empresas_promocao && this.props.id_promocao !== null){
                 this.get_voucher()
+                return;
             }
+            
+            console.log('ola')
 
-            if (promocoes.length > 0){
-                this.setState({
-                    promocoes: promocoes,
-                    modalVisible: true
-                })
-            }else{
+            if (promocoes.length < 1){
                 ToastAndroid.show("Esse posto não tem promoções.", ToastAndroid.LONG);
-            }  
+                return;
+            }
+            
+            this.setState({
+                promocoes: promocoes,
+                modalVisible: true
+            })
+
         }else{
             Alert.alert("Atenção", "Você precisa estar a menos de 100 metros do posto para continuar.",
                 [
@@ -239,6 +245,9 @@ export class ModelEmpresas extends React.PureComponent{
                         <Text style={styles.textInfo}> {this.props.item.item.razao_social}</Text>
                         <TextInputMask type={"cnpj"} editable={false} style={styles.textInfo} value={this.props.item.item.cnpj}/>
                         <Text style={styles.textInfo} >{`${this.props.item.item.endereco}, ${this.props.item.item.numero} - ${this.props.item.item.bairro} - ${this.props.item.item.cidade} `}</Text>
+                    </View>
+                    <View style={styles.colunaModelEmpresaIcone}>
+                        <FontAwesome5Icon name="angle-right" size={25} color={"rgb(100, 100, 100)"}/>
                     </View>
                 </TouchableOpacity>
                 <Modal animationType="slide" transparent={true} visible={this.state.modalVisible} onRequestClose={()=>{this.setState({modalVisible: false})}} >
