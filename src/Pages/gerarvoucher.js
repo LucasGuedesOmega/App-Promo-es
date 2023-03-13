@@ -169,7 +169,7 @@ export class GeraVoucher extends React.Component {
                         <TextInput placeholder="Digite para pesquisar" autoCapitalize="none" onChangeText={(text)=>{this.filtrar(text)}} style={styles.inputSearch}/>
                     </View>
                 </View>
-                <View style={styles.bodyVoucher}>
+                <View style={styles.corpoTransparente}>
                     <FlatList
                         data={this.state.empresas}
                         renderItem={(items)=><ModelEmpresas id_promocao={this.state.promocao} telaInicial={true} item={items}/>}

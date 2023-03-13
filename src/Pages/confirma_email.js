@@ -88,7 +88,7 @@ export class ConfirmaEmail extends React.Component {
             )
         })
         .catch((error)=>{
-            console.log(error.response)
+            console.log(error)
             Alert.alert("Atenção", 'Tente novamente mais tarde.',
             [
                 {

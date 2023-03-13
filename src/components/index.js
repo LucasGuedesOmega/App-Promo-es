@@ -13,7 +13,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export class Cabecalho extends React.Component{
     constructor(props){
         super(props);
-        console.log(props)
         this.state = {
             activeIndexValores: 0,
             valor_cashback: 0.00,
@@ -39,7 +38,6 @@ export class Cabecalho extends React.Component{
         api.get(`/api/v1/vendas?id_usuario=${this.state.tokenDecode.id_usuario}&tipo_desconto=CASHBACK`, {headers: { Authorization : this.state.token}})
         .then((results)=>{
             for(let i = 0; i < results.data.length ; i ++){
-                console.log(results.data[i])
                 cashback += results.data[i].desconto
             }
             this.setState({

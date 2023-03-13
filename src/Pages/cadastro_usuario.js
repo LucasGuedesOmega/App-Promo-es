@@ -84,7 +84,6 @@ export class CadastrarUsuario extends React.Component {
         this.setState({
             cpf: value
         })
-        console.log(this.state.cpf)
     }
 
     onChangeCheckBox(){
@@ -97,7 +96,6 @@ export class CadastrarUsuario extends React.Component {
                 checkBoxValue: true
             })
         }
-        console.log(this.state)
     }
 
     submitForm(){
@@ -221,7 +219,7 @@ export class CadastrarUsuario extends React.Component {
             }
         })
         .catch((error)=>{
-            console.log(error.response)
+            console.log(error)
         })
     }
 
@@ -236,9 +234,6 @@ export class CadastrarUsuario extends React.Component {
         ]
 
         api.post('api/v1/envia-email', dados_email)
-        .then((results)=>{
-            console.log(results)
-        })
         .catch((error)=>{
             console.log(error)
         })

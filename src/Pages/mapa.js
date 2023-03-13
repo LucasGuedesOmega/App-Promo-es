@@ -77,7 +77,6 @@ export class Mapa extends React.Component{
             }
 
             if (granted === 'granted') {
-                console.log('Permissão de localização concedida.');
                 this.setState({
                     permissaoLocalizacao: true
                 })
@@ -95,7 +94,7 @@ export class Mapa extends React.Component{
             }
         })
         .catch(async (error)=>{
-            console.log(error.response)
+            console.log(error)
             if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
                 this.props.navigation.navigate('login')
                 await AsyncStorage.removeItem('token')

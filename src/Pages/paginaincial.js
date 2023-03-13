@@ -40,7 +40,7 @@ export class PaginaInicial extends React.Component {
                 login = false;
             })
             .catch((error)=>{
-                console.log(error.response, 'ola')
+                console.log(error)
             })
         }
 

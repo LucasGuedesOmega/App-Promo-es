@@ -9,6 +9,7 @@ const INPUTSCOLOR = 'rgb(180, 180, 180)'
 const TEXTCOLOR = 'rgb(100, 100, 100)'
 const TITLESCOLOR = 'rgb(210, 210, 210)'
 const CONTENTCOLORTRASPARENTVOUCHER = 'rgba(68, 68, 74, 0.74)';
+const CORPOCOLOR = "#737378";
 
 export const styles = StyleSheet.create({
     content: {
@@ -313,7 +314,7 @@ export const styles = StyleSheet.create({
         color: TEXTCOLOR
     },
     headerVoucher:{
-        flex: 2,
+        flex: 1.2,
         marginBottom: 3,
         alignItems: 'center',
         justifyContent: 'center',
@@ -515,10 +516,10 @@ export const styles = StyleSheet.create({
     linhaModelProduto:{
         flex: 1,
         flexDirection: 'row',
-        paddingVertical: '5%',
-        margin: '2%',
-        padding: 10,
+        margin: '1%',
         height: 100,
+        justifyContent: "center",
+        alignItems: 'center',
         backgroundColor: THIRDCONTENTCOLOR,
         borderRadius: 8,
         shadowColor: "#000",
@@ -722,9 +723,10 @@ export const styles = StyleSheet.create({
     },
     corpoTransparente: {
         flex: 5,
-        backgroundColor: CONTENTCOLORTRASPARENTVOUCHER,
+        backgroundColor: CORPOCOLOR,
         borderTopLeftRadius: 25,
         borderTopRightRadius: 25,
         width: '100%',
+        paddingTop: '1.5%'
     },
 });

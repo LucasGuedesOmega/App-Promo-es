@@ -65,7 +65,6 @@ export class ModelEmpresas extends React.PureComponent{
             }
 
             if (granted === 'granted') {
-                console.log('Permissão de localização concedida.');
                 this.setState({
                     permissaoLocalizacao: true
                 })
@@ -162,8 +161,6 @@ export class ModelEmpresas extends React.PureComponent{
                 this.get_voucher()
                 return;
             }
-            
-            console.log('ola')
 
             if (promocoes.length < 1){
                 ToastAndroid.show("Esse posto não tem promoções.", ToastAndroid.LONG);

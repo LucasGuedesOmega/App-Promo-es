@@ -87,7 +87,7 @@ export class Home extends React.PureComponent {
             }
         })
         .catch(async (error)=>{
-            console.log(error.response, 'ola')
+            console.log(error)
             if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
                 this.props.navigation.navigate('login')
                 await AsyncStorage.removeItem('token')
