@@ -18,11 +18,14 @@ export class GeraVoucher extends React.Component {
             empresas: [],
             empresasPromocao: [],
             promocao: this.props.route.params.id_promocao,
+            selectedPromocao: this.props.route.params.selectedPromocao,
+            selectedCash: this.props.route.params.selectedCash,
             procurar: '', 
             showToastCounter: 0, 
             token: null,
             tokenDecode: null,
-            contadorError: 0
+            contadorError: 0,
+            tipo_desconto: null
         }
 
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -39,6 +42,16 @@ export class GeraVoucher extends React.Component {
 
         await this.get_empresas_promocao()
         this.get_empresas()
+        
+        if(this.state.selectedCash){
+            this.setState({
+                tipo_desconto: 'CASHBACK'
+            });
+        }else if(this.state.selectedPromocao){
+            this.setState({
+                tipo_desconto: 'DESCONTO'
+            })
+        }
 
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
@@ -61,8 +74,22 @@ export class GeraVoucher extends React.Component {
                 })
             }
         }).catch(async (error)=>{
-            if(error.name === 'AxiosError'){
-                await this.get_empresas_promocao()
+            if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if (error.response.data.error === 'Signature verification failed'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
             }
         })
     }
@@ -76,33 +103,23 @@ export class GeraVoucher extends React.Component {
                 if(results.data.length > 0){
                     empresa.push(results.data[0])
                 }
-            }).catch((error)=>{
-                let count_error = this.state.contadorError;
-                if(error.name === "AxiosError"){
-                    
-                    count_error += 1
-                    this.setState({
-                        contadorError: count_error
-                    })
-                    if (this.state.contadorError === 25){
-                        Alert.alert("Atenção", "Sem conexão com a API.",
-                        [
-                            {
-                                text: "OK",
-                                onPress: ()=>{return;}
-                            }
-                        ]
-                        )
-                    }else{
-                        this.get_empresas()
-                    }
-                    
+            }).catch(async (error)=>{
+                if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
+                    this.props.navigation.navigate('login')
+                    await AsyncStorage.removeItem('token')
+                    return;
                 }else if (error.response.data.error === 'Signature verification failed'){
                     this.props.navigation.navigate('login')
+                    await AsyncStorage.removeItem('token')
+                    return;
                 }else if(error.response.data.error === 'Token expirado'){
                     this.props.navigation.navigate('login')
-                }else if(error.response.data.error === 'não autorizado'){
+                    await AsyncStorage.removeItem('token')
+                    return;
+                }else if(error.response.data.error === 'Token expirado'){
                     this.props.navigation.navigate('login')
+                    await AsyncStorage.removeItem('token')
+                    return;
                 }
             })
         }
@@ -172,7 +189,7 @@ export class GeraVoucher extends React.Component {
                 <View style={styles.corpoTransparente}>
                     <FlatList
                         data={this.state.empresas}
-                        renderItem={(items)=><ModelEmpresas id_promocao={this.state.promocao} telaInicial={true} item={items}/>}
+                        renderItem={(items)=><ModelEmpresas tipo_desconto={this.state.tipo_desconto} id_promocao={this.state.promocao} telaInicial={true} item={items}/>}
                     />
                 </View>
             </View>

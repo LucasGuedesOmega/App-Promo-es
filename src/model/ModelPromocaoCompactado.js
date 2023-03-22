@@ -1,7 +1,8 @@
 import React from "react";
 
-import { View, Text, TouchableOpacity, Image, Alert, Modal} from "react-native";
+import { View, Text, TouchableOpacity, Image, Modal} from "react-native";
 import { styles } from "../temas/base";
+import { CheckBoxStyled } from "../components/styledComponents";
 
 import { ToggleButton } from "../components";
 import api from "../services/api";
@@ -11,7 +12,6 @@ import jwtDecode from "jwt-decode";
 
 import Barcode from "react-native-barcode-builder";
 
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 export class ModelPromocaoCampact extends React.Component{
     constructor(props){
         super(props);
@@ -20,7 +20,9 @@ export class ModelPromocaoCampact extends React.Component{
             selectedPromocao: true,
             selectedCash: false,
             modalVoucher: false,
-            voucher: null
+            voucher: null,
+            checkBoxValue: false,
+            disableCheckbox: true
         }
     }
 
@@ -73,7 +75,11 @@ export class ModelPromocaoCampact extends React.Component{
             tipo_promocao = 'CASHBACK'
         } else if (this.state.selectedPromocao) {
             tipo_promocao = 'DESCONTO'
-        }   
+        } 
+
+        if (this.state.checkBoxValue){
+            tipo_promocao = 'RESGATE'
+        }
 
         let dados_dict = {
             data_ini: data_ini,
@@ -94,6 +100,25 @@ export class ModelPromocaoCampact extends React.Component{
                 })
             }
         })
+        .catch(async (error)=>{
+            if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if (error.response.data.error === 'Signature verification failed'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }
+        })
     }
 
     onClickButtonSelected(){
@@ -110,6 +135,18 @@ export class ModelPromocaoCampact extends React.Component{
         }
     }
     
+    onChangeCheckBox(){
+        if (this.state.checkBoxValue){
+            this.setState({
+                checkBoxValue: false
+            })
+        }else{
+            this.setState({
+                checkBoxValue: true
+            })
+        }
+    }
+
     render(){
         return(
             <View>
@@ -125,19 +162,23 @@ export class ModelPromocaoCampact extends React.Component{
                             Válido de {this.format_date(this.props.items.item.data_ini)} até {this.format_date(this.props.items.item.data_fim)}
                         </Text>
                     </View>
-                    <View style={styles.colunaModelMenuIcon}>
-                        <FontAwesome5 name="chevron-right" style={styles.handPointUp} size={25}/>
-                    </View>
                 </TouchableOpacity>
                 <Modal animationType="slide" transparent={true} visible={this.state.open_modal} onRequestClose={()=>{this.setState({open_modal: false})}}>
                     <TouchableOpacity onPress={()=>{this.setState({open_modal: false})}} style={styles.contentModelTransparent}>
                         <View style={styles.modalContentCashBack}>
                             <View style={{flex: 1, flexDirection: "row",  justifyContent: "center", alignItems: 'flex-end'}}>
-                                <View><Text style={styles.textColorModalCash}>Qual a forma de resgate?</Text></View>
+                                <View><Text style={styles.textColorModalCash}>Qual a forma da promoção?</Text></View>
                             </View>
-                            <View style={{flex: 4, flexDirection: "row", justifyContent: "flex-start", alignItems: 'center'}}>
-                                <View style={{marginHorizontal: 5, flex: 1}}><ToggleButton text={'Desconto'} selected={this.state.selectedPromocao} onPress={()=>{this.onClickButtonSelected()}} /></View>
-                                <View style={{marginHorizontal: 5, flex: 1}}><ToggleButton text={'CashBack'} selected={this.state.selectedCash} onPress={()=>{this.onClickButtonSelected()}} /></View> 
+                            <View style={styles.activeViewToggleButton}>
+                                <View style={{marginHorizontal: 5, flex: 1}} ><ToggleButton disabled={this.state.checkBoxValue} text={'Desconto'} selected={this.state.selectedPromocao} onPress={()=>{this.onClickButtonSelected()}} /></View>
+                                <View style={{marginHorizontal: 5, flex: 1}}><ToggleButton disabled={this.state.checkBoxValue} text={'CashBack'} selected={this.state.selectedCash} onPress={()=>{this.onClickButtonSelected()}} /></View> 
+                            </View>
+                            <View style={{flex: 1, flexDirection: "row", justifyContent: "center", alignItems: 'flex-start'}}>
+                                <CheckBoxStyled
+                                    text={'Resgatar CashBack'}
+                                    onChange={()=>{this.onChangeCheckBox()}}
+                                    value={this.state.checkBoxValue}
+                                />
                             </View>
                             <TouchableOpacity onPress={()=>{this.get_voucher()}} style={styles.buttonVoucher}><Text style={styles.textColorButtonVoucher}>GERAR VOUCHER</Text></TouchableOpacity>
                         </View>

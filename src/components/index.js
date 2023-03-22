@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, Text } from "react-native";
+import { View, TouchableOpacity, Text, ToastAndroid } from "react-native";
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -30,12 +30,12 @@ export class Cabecalho extends React.Component{
             })
         })
 
-        this.get_valor_cashback();
+        await this.get_valor_cashback();
     }
 
-    get_valor_cashback(){
+    async get_valor_cashback(){
         let cashback = 0;
-        api.get(`/api/v1/vendas?id_usuario=${this.state.tokenDecode.id_usuario}&tipo_desconto=CASHBACK`, {headers: { Authorization : this.state.token}})
+        await api.get(`/api/v1/vendas?id_usuario=${this.state.tokenDecode.id_usuario}&tipo_desconto=CASHBACK&status_venda=CONCLUIDA`, {headers: { Authorization : this.state.token}})
         .then((results)=>{
             for(let i = 0; i < results.data.length ; i ++){
                 cashback += results.data[i].desconto
@@ -43,6 +43,25 @@ export class Cabecalho extends React.Component{
             this.setState({
                 valor_cashback: cashback
             })
+        })
+        .catch(async (error)=>{
+            if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if (error.response.data.error === 'Signature verification failed'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }
         })
     }
 
@@ -87,9 +106,13 @@ export class ToggleButton extends React.Component{
     }
 
     onClickButton(){
+        if (this.props.disabled){
+            ToastAndroid.show("Flag de resgate selecionada.", ToastAndroid.SHORT);
+            return;
+        }
         this.props.onPress?.();
     }
-
+    
     render(){
         return(
             <TouchableOpacity style={this.props.selected ? styles.activeButtonSelected : styles.buttonNotSelected} onPress={this.onClickButton}>

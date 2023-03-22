@@ -3,8 +3,9 @@ import api from "../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
-import { View, Image, TouchableOpacity, Text, Modal, ScrollView, Alert, TextInput, FlatList } from "react-native";
+import { View, Image, TouchableOpacity, Text, Modal } from "react-native";
 import { styles } from "../temas/base";
 import { ToggleButton } from "../components";
 
@@ -94,13 +95,23 @@ export class ModelPromocoes extends PureComponent{
                 })
             }
         })
-        .catch((error)=>{
-            if (error.response.data.error === 'Signature verification failed'){
+        .catch(async (error)=>{
+            if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
                 this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if (error.response.data.error === 'Signature verification failed'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
             }else if(error.response.data.error === 'Token expirado'){
                 this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
             }else if(error.response.data.error === 'Token expirado'){
                 this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
             }
         })
     }
@@ -154,14 +165,14 @@ export class ModelPromocoes extends PureComponent{
                 <View style={{flex: 1}}>
                     <Text style={styles.textTituloPromo}>{this.props.items.titulo}</Text>
                 </View>
-                <View style={{flex: 45}}>
+                <View style={{flex: 1000}}>
                     <TouchableOpacity style={styles.btImagemPromo} onPress={()=>{this.openModal()}}>
                         <Image source={{uri: `${this.props.items.imagem}`}} style={styles.imgPromo}/>
                     </TouchableOpacity>
                 </View>
                 <View style={{flex: 1}}>
-                    <Text style={styles.text}>Valor: {this.props.items.desconto_total}</Text>
-                    <Text style={styles.text}>Válido até: {this.format_date(this.props.items.data_fim)}</Text>
+                    <Text style={styles.textInfoProdutos}>Valor: {this.props.items.desconto_total}</Text>
+                    <Text style={styles.textInfoProdutos}>Válido até: {this.format_date(this.props.items.data_fim)}</Text>
                 </View>
                 <Modal visible={this.state.openModalView} animationType={'fade'}>
                     <View style={styles.content}>
@@ -181,25 +192,29 @@ export class ModelPromocoes extends PureComponent{
                                         <Text style={styles.textInfo}>{descricao_produto}</Text>
                                     </View>
                                     <View style={{padding: 10}}>
-                                        <Text style={styles.scrollTextTitulo}>Infos e Regras</Text>
+                                        <Text style={styles.scrollTextTitulo}>Informações e Regras</Text>
                                         <Text style={styles.textInfo}>Valido até: {this.format_date(this.props.items.data_fim)}</Text>
                                         <Text style={styles.textInfo}>Desconto por unidade: R${this.props.items.desconto_por_unidade}</Text>
-                                        <Text style={styles.textInfo}>Dias da semana:{this.state.textWeekDays}</Text>
+                                        
+                                    </View>
+                                    <View style={{padding: 10}}>
+                                        <Text style={styles.scrollTextTitulo}>Dias com Promoção</Text>
+                                        <Text style={styles.textInfoSemana}>{this.state.textWeekDays}</Text>
                                     </View>
                                     { !this.props.semana ?
                                         (
                                             <View style={{flex: 1}}>
                                                 <View style={{padding: 10}}>
-                                                    <Text style={styles.scrollTextTitulo}>Como Descontar</Text>
+                                                    <Text style={styles.scrollTextTitulo}>Escolha <FontAwesome5 name="hand-point-up" style={styles.backspaceIcon} size={20} /></Text>
                                                 </View>
                                                 <View style={styles.viewButtonsDesconto}>
-                                                    <View style={{ flex: 1}}><ToggleButton text={'Desconto'} selected={this.state.selectedPromocao} onPress={()=>{this.onClickButtonSelected()}} /></View>
-                                                    <View style={{ flex: 1}}><ToggleButton text={'CashBack'} selected={this.state.selectedCash} onPress={()=>{this.onClickButtonSelected()}} /></View>     
+                                                    <View style={{ flex: 1, marginRight: '0.5%'}}><ToggleButton text={'Desconto'} selected={this.state.selectedPromocao} onPress={()=>{this.onClickButtonSelected()}} /></View>
+                                                    <View style={{ flex: 1, marginLeft: '0.5%'}}><ToggleButton text={'CashBack'} selected={this.state.selectedCash} onPress={()=>{this.onClickButtonSelected()}} /></View>     
                                                 </View>
                                             
                                                 <View style={styles.viewModalPromoSectionBodyBtVoucher}>
                                                     <TouchableOpacity style={styles.btGeraVoucher} 
-                                                    onPress={()=>{this.props.navigation.navigate('gera_voucher', {id_promocao: this.props.items.id_promocao, promocao:this.state.selectedPromocao, cash:this.state.selectedCash})}}>
+                                                    onPress={()=>{this.props.navigation.navigate('gera_voucher', {id_promocao: this.props.items.id_promocao, selectedPromocao:this.state.selectedPromocao, selectedCash:this.state.selectedCash})}}>
                                                         <Text style={styles.activeText}>Gerar Voucher</Text>
                                                     </TouchableOpacity>
                                                 </View>

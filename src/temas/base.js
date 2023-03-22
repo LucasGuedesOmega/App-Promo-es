@@ -66,6 +66,7 @@ export const styles = StyleSheet.create({
         borderTopLeftRadius: 25,
         borderTopRightRadius: 25,
         width: '100%',
+        paddingBottom: '3%'
     },
     tabBar:{
         backgroundColor: CONTENTCOLOR,
@@ -148,7 +149,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     scrollTextTitulo: {
-        fontSize: 18,
+        fontSize: 25,
         fontWeight: 'bold',
         color: TEXTCOLOR,
         margin: '1%'
@@ -166,7 +167,7 @@ export const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     viewButtons:{
         flex: 1
@@ -258,7 +259,21 @@ export const styles = StyleSheet.create({
     },
     textInfo: {
         color: SECONDCONTENTCOLOR,
-        textAlign: "center"
+        textAlign: "left",
+        fontSize: 20,
+        marginHorizontal: '2%'
+    },
+    textInfoSemana: {
+        color: SECONDCONTENTCOLOR,
+        textAlign: "center",
+        fontSize: 20,
+        marginHorizontal: '2%'
+    },
+    textInfoProdutos: {
+        color: SECONDCONTENTCOLOR,
+        textAlign: "center",
+        fontSize: 20,
+        marginHorizontal: '2%'
     },
     textTituloPromo: {
         color: SECONDCONTENTCOLOR,
@@ -268,10 +283,12 @@ export const styles = StyleSheet.create({
     btGeraVoucher: {
         backgroundColor: BUTTONSCOLORS,
         padding: 10,
-        borderRadius: 20,
-        borderWidth: 1,
+        borderRadius: 25,
         flex: 1,
-        maxHeight: 50
+        width: '100%',
+        maxHeight: 50,
+        textAlign: 'center',
+        justifyContent:'center'
     },
     contentHeaderEmpresa:{
         flex: 1,
@@ -311,7 +328,7 @@ export const styles = StyleSheet.create({
         margin: 2
     },
     handPointUp:{
-        color: TEXTCOLOR
+        color: TEXTCOLOR,
     },
     headerVoucher:{
         flex: 1.2,
@@ -344,17 +361,8 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         margin: '1%',
         padding: 10,
-        backgroundColor: THIRDCONTENTCOLOR,
-        borderRadius: 8,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-
-        elevation: 5,
+        borderBottomWidth: 1,
+        borderBottomColor: INPUTSCOLOR
     },
     colunaModelEmpresaInfo:{
         flex: 3,
@@ -389,7 +397,8 @@ export const styles = StyleSheet.create({
     },
     viewButtonsDesconto: {
         flex: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        marginHorizontal: '3%'
     },
     buttonAbastecer:{
         backgroundColor: '#09649d',
@@ -504,9 +513,6 @@ export const styles = StyleSheet.create({
 
         elevation: 5,
     },
-    textModelProdutos: {
-        color: TEXTCOLOR
-    },
     colunaModelProduto:{
         flex: 3,
         paddingHorizontal: 5,
@@ -520,29 +526,21 @@ export const styles = StyleSheet.create({
         height: 100,
         justifyContent: "center",
         alignItems: 'center',
-        backgroundColor: THIRDCONTENTCOLOR,
-        borderRadius: 8,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-
-        elevation: 5,
+        borderBottomWidth: 1,
+        borderBottomColor: SECONDCONTENTCOLOR
     },
     contentModelTransparent: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: CONTENTCOLORTRASPARENTVOUCHER
+        backgroundColor: CONTENTCOLORTRASPARENTVOUCHER,
     },
     modalContentCashBack: {
         width: "85%",
-        height: "25%",
+        height: "30%",
         backgroundColor: THIRDCONTENTCOLOR,
-        borderRadius: 4
+        borderRadius: 4,
+        zIndex: 1
     },
     modalContentVoucher: {
         flexDirection: 'column',
@@ -723,10 +721,17 @@ export const styles = StyleSheet.create({
     },
     corpoTransparente: {
         flex: 5,
-        backgroundColor: CORPOCOLOR,
+        backgroundColor: THIRDCONTENTCOLOR,
         borderTopLeftRadius: 25,
         borderTopRightRadius: 25,
         width: '100%',
-        paddingTop: '1.5%'
+        paddingTop: '1.5%',
+        paddingBottom: '3%'
+    },
+    activeViewToggleButton: {
+        flex: 2, 
+        flexDirection: "row", 
+        justifyContent: "center", 
+        alignItems: 'center'
     },
 });

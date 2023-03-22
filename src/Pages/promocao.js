@@ -50,15 +50,31 @@ export class Promocao extends React.PureComponent{
 
     get_empresas(){
         api.get(`api/v1/empresa?id_grupo_empresa=${this.state.tokenDecode.id_grupo_empresa}`, { headers: { Authorization:this.state.token}})
-        .then(async (results)=>{
+        .then((results)=>{
             if (results.data.length > 0){
-                await this.setState({
+                this.setState({
                     empresas: results.data
                 })
             }
         })
-        .catch((error)=>{
-            console.log(error)
+        .catch(async (error)=>{
+            if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if (error.response.data.error === 'Signature verification failed'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }
         })
     }
 

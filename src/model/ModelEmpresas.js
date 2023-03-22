@@ -127,8 +127,24 @@ export class ModelEmpresas extends React.PureComponent{
                     })
                 }
             })
-            .catch((error)=>{
-                console.log(error)
+            .catch(async (error)=>{
+                if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
+                    this.props.navigation.navigate('login')
+                    await AsyncStorage.removeItem('token')
+                    return;
+                }else if (error.response.data.error === 'Signature verification failed'){
+                    this.props.navigation.navigate('login')
+                    await AsyncStorage.removeItem('token')
+                    return;
+                }else if(error.response.data.error === 'Token expirado'){
+                    this.props.navigation.navigate('login')
+                    await AsyncStorage.removeItem('token')
+                    return;
+                }else if(error.response.data.error === 'Token expirado'){
+                    this.props.navigation.navigate('login')
+                    await AsyncStorage.removeItem('token')
+                    return;
+                }
             })
             
             if (this.state.empresas_promocao && this.props.id_promocao === null){
@@ -152,8 +168,24 @@ export class ModelEmpresas extends React.PureComponent{
                             }
                         }
                     })
-                    .catch((error)=>{
-                        console.log(error)
+                    .catch(async (error)=>{
+                        if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
+                            this.props.navigation.navigate('login')
+                            await AsyncStorage.removeItem('token')
+                            return;
+                        }else if (error.response.data.error === 'Signature verification failed'){
+                            this.props.navigation.navigate('login')
+                            await AsyncStorage.removeItem('token')
+                            return;
+                        }else if(error.response.data.error === 'Token expirado'){
+                            this.props.navigation.navigate('login')
+                            await AsyncStorage.removeItem('token')
+                            return;
+                        }else if(error.response.data.error === 'Token expirado'){
+                            this.props.navigation.navigate('login')
+                            await AsyncStorage.removeItem('token')
+                            return;
+                        }
                     })
                 }
 
@@ -215,7 +247,7 @@ export class ModelEmpresas extends React.PureComponent{
             id_promocao: this.props.id_promocao,
             id_empresa: this.props.item.item.id_empresa,
             status: true,
-            tipoCodigo: 'CASHBACK',
+            tipoCodigo: this.props.tipo_desconto,
             usado: false
         }
 
@@ -226,6 +258,25 @@ export class ModelEmpresas extends React.PureComponent{
                     modalVoucher: true,
                     voucher: results.data.Voucher
                 })
+            }
+        })
+        .catch(async (error)=>{
+            if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if (error.response.data.error === 'Signature verification failed'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
             }
         })
     }
@@ -241,10 +292,7 @@ export class ModelEmpresas extends React.PureComponent{
                     <View style={styles.colunaModelEmpresaInfo}>
                         <Text style={styles.textInfo}> {this.props.item.item.razao_social}</Text>
                         <TextInputMask type={"cnpj"} editable={false} style={styles.textInfo} value={this.props.item.item.cnpj}/>
-                        <Text style={styles.textInfo} >{`${this.props.item.item.endereco}, ${this.props.item.item.numero} - ${this.props.item.item.bairro} - ${this.props.item.item.cidade} `}</Text>
-                    </View>
-                    <View style={styles.colunaModelEmpresaIcone}>
-                        <FontAwesome5Icon name="angle-right" size={25} color={"rgb(100, 100, 100)"}/>
+                        <Text style={styles.textInfoProdutos} >{`${this.props.item.item.endereco}, ${this.props.item.item.numero} - ${this.props.item.item.bairro} - ${this.props.item.item.cidade} `}</Text>
                     </View>
                 </TouchableOpacity>
                 <Modal animationType="slide" transparent={true} visible={this.state.modalVisible} onRequestClose={()=>{this.setState({modalVisible: false})}} >

@@ -219,7 +219,7 @@ export class CheckBoxStyled extends React.Component{
     constructor(props){
         super(props)
         this.state = {
-           
+            disableCheckbox: this.props.disableCheckbox
         }
     }
     
@@ -234,6 +234,7 @@ export class CheckBoxStyled extends React.Component{
                     status={this.props.value ? 'checked': 'unchecked'}
                     onPress={()=>{this.onChange()}}
                     style={styles.checkBoxStyled}
+                    disabled={this.state.disableCheckbox}
                 />
                 <Text style={styles.iconInputStyled}>{this.props.text}</Text>
             </View>

@@ -50,24 +50,23 @@ export class Login extends React.Component {
                 }))
             }
         })
-        .catch((error)=>{
-            let count_error = this.state.contadorError;
-            if(error.name === "AxiosError"){
-                this.get_historico()
-                count_error += 1
-                this.setState({
-                    contadorError: count_error
-                })
-                if (this.state.contadorError === 25){
-                    Alert.alert("Atenção", "Sem conexão com a API.",
-                    [
-                        {
-                            text: "OK",
-                            onPress: ()=>{return;}
-                        }
-                    ]
-                    )
-                }
+        .catch(async (error)=>{
+            if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if (error.response.data.error === 'Signature verification failed'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
             }
         })
     }   
@@ -102,19 +101,31 @@ export class Login extends React.Component {
             let token = results.data.token;
             
             await AsyncStorage.setItem("token", token)
-            .then((token)=>{
+            .then(()=>{
                 this.props.navigation.navigate('home')
             })
 
         })
-        .catch((error)=>{
+        .catch(async (error)=>{
             console.log(error)
-            if(error.response.data.Error === 'Parametros invalidos'){
-                alert("Login inválido.")
-            }else if(error.name === 'AxiosError'){
-                alert("Sem conexão com a API.")
+            if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if (error.response.data.error === 'Signature verification failed'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
+            }else if(error.response.data.error === 'Token expirado'){
+                this.props.navigation.navigate('login')
+                await AsyncStorage.removeItem('token')
+                return;
             }
-        })  
+        })
     }
 
     render(){

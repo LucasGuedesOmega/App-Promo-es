@@ -14,11 +14,11 @@ export class ModelProdutos extends React.PureComponent{
         return(
             <View style={styles.linhaModelProduto}>
                 <View style={styles.colunaModel}>
-                    <Text style={styles.textModelProdutos}>{this.props.item.item.id_externo}</Text>
+                    <Text style={styles.textInfoProdutos}>{this.props.item.item.id_externo}</Text>
                 </View>
                 <View style={styles.colunaModelProduto}>
-                    <View style={styles.linhaModel}><Text style={styles.textModelProdutos}>{this.props.item.item.descricao}</Text></View>
-                    <View style={styles.linhaModel}><Text style={styles.textModelProdutos}>{this.props.item.item.codigo_barras}</Text></View>
+                    <View style={styles.linhaModel}><Text style={styles.textInfoProdutos}>{this.props.item.item.descricao}</Text></View>
+                    <View style={styles.linhaModel}><Text style={styles.textInfoProdutos}>{this.props.item.item.codigo_barras}</Text></View>
                 </View>
             </View>
         );
