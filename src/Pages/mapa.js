@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Fragment} from "react";
 import api from "../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
@@ -11,7 +11,7 @@ import MapView, { Marker } from 'react-native-maps';
 
 import MarkerUser from '../assets/marker-user.png'
 import MarkerGasStation from '../assets/marker-gas-station.png'
-import { Cabecalho } from "../components";
+import { Cabecalho, Loading } from "../components";
 import { ModelPromocaoCampact } from "../model/ModelPromocaoCompactado";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -30,7 +30,9 @@ export class Mapa extends React.Component{
             empresas: [],
             promocoes: [],
             modalVisible: false,
-            promocaoEmpresa: null
+            promocaoEmpresa: null,
+
+            loading: false
         };
 
         this.pedePermissao = this.pedePermissao.bind(this);
@@ -39,6 +41,10 @@ export class Mapa extends React.Component{
     }
 
     async componentDidMount(){
+        this.setState({
+            loading: true
+        });
+
         await AsyncStorage.getItem('token')
         .then((token)=>{
             this.setState({
@@ -50,6 +56,10 @@ export class Mapa extends React.Component{
         await this.pedePermissao();
         await this.getLocalizacaoAtual();
         await this.getEmpresas();
+
+        this.setState({
+            loading: false
+        });
     }
 
     async getLocalizacaoAtual(){
@@ -85,7 +95,7 @@ export class Mapa extends React.Component{
     }
 
     async getEmpresas(){
-        await api.get(`api/v1/empresa?id_grupo_empresa=${this.state.tokenDecode.id_grupo_empresa}`, {headers: { Authorization: this.state.token}})
+        await api.get(`api/v1/empresa?id_grupo_empresa=${this.state.tokenDecode.id_grupo_empresa}&imagens=false`, {headers: { Authorization: this.state.token}})
         .then((results)=>{
             if (results.data.length > 0){
                 this.setState({
@@ -244,34 +254,46 @@ export class Mapa extends React.Component{
                 <View style={styles.content}>
                     <Cabecalho/>
                     <View style={styles.corpo}>
-                        <MapView style={styles.mapa} region={dados_mapa}>
-                            <Marker
-                                coordinate={{
-                                    latitude: this.state.latitude_atual, 
-                                    longitude: this.state.longitude_atual,
-                                }}
-                                title={"Você está aqui."}
-                                description={"Olá estou aqui."}
-                                pinColor={'blue'}
-                                image={MarkerUser}
-                            />
-                            {
-                                this.state.empresas.map((value, index)=>(
-                                    <Marker
-                                        coordinate={{
-                                            latitude: value.latitude, 
-                                            longitude: value.longitude,
-                                        }}
-                                        title={value.razao_social}
-                                        description={value.cnpj.replace(/\D/g, '')
-                                        .replace(/^(\d{2})(\d{3})?(\d{3})?(\d{4})?(\d{2})?/, "$1.$2.$3/$4-$5")}
-                                        image={MarkerGasStation}
-                                        key={index}
-                                        onPress={()=>{this.markerPostoClicked(value)}}
-                                    />
-                                ))
-                            }
-                        </MapView>
+                        
+                        {
+                            this.state.loading?
+                            (
+                                <Loading/>
+                            ):
+                            (
+                                <Fragment>
+                                    <MapView style={styles.mapa} region={dados_mapa}>
+                                        <Marker
+                                            coordinate={{
+                                                latitude: this.state.latitude_atual, 
+                                                longitude: this.state.longitude_atual,
+                                            }}
+                                            title={"Você está aqui."}
+                                            description={"Olá estou aqui."}
+                                            pinColor={'blue'}
+                                            image={MarkerUser}
+                                        />
+                                        {
+                                            this.state.empresas.map((value, index)=>(
+                                                <Marker
+                                                    coordinate={{
+                                                        latitude: value.latitude, 
+                                                        longitude: value.longitude,
+                                                    }}
+                                                    title={value.razao_social}
+                                                    description={value.cnpj.replace(/\D/g, '')
+                                                    .replace(/^(\d{2})(\d{3})?(\d{3})?(\d{4})?(\d{2})?/, "$1.$2.$3/$4-$5")}
+                                                    image={MarkerGasStation}
+                                                    key={index}
+                                                    onPress={()=>{this.markerPostoClicked(value)}}
+                                                />
+                                            ))
+                                        }
+                                    </MapView>
+                                </Fragment>
+                            )
+                        }
+                        
                     </View>
                     <Modal animationType="slide" transparent={true} visible={this.state.modalVisible} onRequestClose={()=>{this.setState({modalVisible: false})}} >
                         <View style={styles.centeredModalMenu}>

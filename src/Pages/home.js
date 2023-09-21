@@ -118,7 +118,7 @@ export class Home extends React.PureComponent {
                             <View style={styles.viewScrollSectionHeader}>
                                 <Text style={styles.scrollTextTitulo}>Ações</Text>
                             </View>
-                            <View style={styles.viewScrollSectionBody}>
+                            <View style={styles.viewScrollSectionBodyButtons}>
                                 <FlatList 
                                     data={this.state.buttonAcoes}
                                     horizontal={true}

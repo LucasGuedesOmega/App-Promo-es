@@ -54,7 +54,7 @@ export const styles = StyleSheet.create({
         margin: '2%'
     },  
     cabecalhoSection2: {
-        flex: 1,
+        flex: 1.3,
         flexDirection: 'row',
         justifyContent: "center",
         alignItems: 'center',
@@ -140,6 +140,12 @@ export const styles = StyleSheet.create({
         padding: 10
     },
     viewScrollSectionBody:{
+        height: '100%',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        paddingHorizontal: 13
+    },
+    viewScrollSectionBodyButtons:{
         justifyContent: 'center',
         flexDirection: 'row',
         paddingHorizontal: 13
@@ -158,6 +164,11 @@ export const styles = StyleSheet.create({
         width: '95%',
         height: '100%',
         borderRadius: 7,
+    },
+    imgPosto: {
+        flex:1,
+        width: '100%',
+        height: '100%',
     },
     viewImgPromo: {
         flex: 3,
@@ -275,6 +286,18 @@ export const styles = StyleSheet.create({
         fontSize: 20,
         marginHorizontal: '2%'
     },
+    textInfoEndereco: {
+        color: SECONDCONTENTCOLOR,
+        textAlign: "center",
+        fontSize: 15,
+        marginHorizontal: '2%'
+    },
+    textInfoDistancia:{
+        color: BUTTONSCOLORS,
+        textAlign: "left",
+        fontSize: 15,
+        marginHorizontal: '2%'
+    },
     textTituloPromo: {
         color: SECONDCONTENTCOLOR,
         textAlign: 'center',
@@ -361,8 +384,7 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         margin: '1%',
         padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: INPUTSCOLOR
+        marginBottom: '0.03%'
     },
     colunaModelEmpresaInfo:{
         flex: 3,
@@ -449,7 +471,6 @@ export const styles = StyleSheet.create({
         textAlign: 'center'
     },
     listModalMenu: {
-        padding: 10,
         height: '100%',
     },
     headerModalMenuTitulo:{
@@ -499,19 +520,9 @@ export const styles = StyleSheet.create({
     linhaModelMenu: {
         flex: 1,
         flexDirection: "row",
-        margin: '1%',
         padding: 10,
         backgroundColor: THIRDCONTENTCOLOR,
-        borderRadius: 8,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-
-        elevation: 5,
+        margin: '0.03%'
     },
     colunaModelProduto:{
         flex: 3,
@@ -526,7 +537,7 @@ export const styles = StyleSheet.create({
         height: 100,
         justifyContent: "center",
         alignItems: 'center',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.01,
         borderBottomColor: SECONDCONTENTCOLOR
     },
     contentModelTransparent: {
@@ -734,4 +745,12 @@ export const styles = StyleSheet.create({
         justifyContent: "center", 
         alignItems: 'center'
     },
+    viewLoading:{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loading:{
+        color: CONTENTCOLOR
+    }
 });

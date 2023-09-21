@@ -39,7 +39,7 @@ export class CarrouselPromo extends PureComponent{
         var promotion_list = [];
         var allPromotions_list = [];
         let hoje = new Date();
-        
+        console.log('ola')
         await api.get(`/api/v1/promocao?id_grupo_empresa=${this.state.tokenDecode.id_grupo_empresa}`, { headers : {Authorization:this.state.token}})
         .then((results)=>{
             if (results.data.length > 0){
@@ -73,6 +73,7 @@ export class CarrouselPromo extends PureComponent{
             }
         })
         .catch(async (error)=>{
+            console.log(error)
             if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
                 this.props.navigation.navigate('login')
                 await AsyncStorage.removeItem('token')

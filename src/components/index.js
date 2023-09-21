@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, Text, ToastAndroid } from "react-native";
+import { View, TouchableOpacity, Text, ToastAndroid, ActivityIndicator } from "react-native";
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -93,6 +93,7 @@ export class Cabecalho extends React.Component{
                         <Text><FontAwesome name="user" size={30} color={30}/></Text>
                     </TouchableOpacity>
                 </View>
+
             </View>
         );
 
@@ -118,6 +119,20 @@ export class ToggleButton extends React.Component{
             <TouchableOpacity style={this.props.selected ? styles.activeButtonSelected : styles.buttonNotSelected} onPress={this.onClickButton}>
                 <Text style={this.props.selected ? styles.activeText : styles.notActiveText}>{`${this.props.text}`}</Text>
             </TouchableOpacity>
+        )
+    }
+}
+
+export class Loading extends React.Component{
+    constructor(props){
+        super(props);
+    }
+
+    render(){
+        return(
+            <View style={styles.viewLoading}>
+                <ActivityIndicator size="large" style={styles.loading} />
+            </View>
         )
     }
 }

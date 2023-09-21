@@ -75,7 +75,7 @@ export class ModelPromocoes extends PureComponent{
     }
 
     async voltar() {
-        await this.setState({
+        this.setState({
             openModalView: false,
         })
     }

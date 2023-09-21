@@ -1,7 +1,6 @@
-import React from "react";
+import React, {Fragment} from "react";
 
-import { TextInputMask } from "react-native-masked-text";
-import { View, TouchableOpacity, Text, Modal, FlatList, ToastAndroid, Alert } from "react-native";
+import { View, TouchableOpacity, Text, Modal, FlatList, ToastAndroid, Alert, Image } from "react-native";
 import { styles } from "../temas/base";
 
 import api from "../services/api";
@@ -17,7 +16,6 @@ import Barcode from "react-native-barcode-builder";
 
 import RNPermissions, { PERMISSIONS } from 'react-native-permissions';
 import Geolocation from 'react-native-geolocation-service';
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 
 export class ModelEmpresas extends React.PureComponent{
     constructor(props){
@@ -34,14 +32,18 @@ export class ModelEmpresas extends React.PureComponent{
             tokenDecodde: null,
             permissaoLocalizacao: false,
             latitude_atual: null, 
-            longitude_atual: null
+            longitude_atual: null,
+            distancia: null,
+            sigla: null
         }
 
     }   
 
     async componentDidMount(){
-        await this.pedePermissao()
-        await this.getLocalizacaoAtual()
+
+        await this.pedePermissao();
+        await this.getLocalizacaoAtual();
+        await this.get_distancia();
 
         await AsyncStorage.getItem('token')
         .then((token)=>{
@@ -108,10 +110,11 @@ export class ModelEmpresas extends React.PureComponent{
             {lat: this.state.latitude_atual, lng: this.state.longitude_atual},
             {lat: this.props.item.item.latitude, lng: this.props.item.item.longitude}    
         )
+
         let promocoes = [];
         let hoje = new Date();
         let empresa_promocao = [];
-
+        
         if (distancia < 100){
             
             await api.get(`api/v1/empresas-promocao?id_empresa=${this.props.item.item.id_empresa}`, { headers : {Authorization: this.state.token}})
@@ -280,19 +283,46 @@ export class ModelEmpresas extends React.PureComponent{
             }
         })
     }
+    
+    async get_distancia(){
+        let distancia = this.props.item.item.distancia / 1000;
+        let sigla = 'Km'
+
+        if (this.props.item.item.distancia < 1000){
+            sigla = 'm';
+            distancia = this.props.item.item.distancia;
+        } else{
+            distancia = distancia 
+        }
+
+        this.setState({
+            sigla: sigla,
+            distancia: distancia 
+        })
+    }
 
     render(){
-       
+
+        
         return(
             <View>
                 <TouchableOpacity style={styles.linhaModelEmpresa} onPress={()=>{this.get_promocoes()}}>
                     <View style={styles.colunaModelEmpresaIcone}>
-                        <MaterialCommunityIcons name="gas-station" size={30} color={"rgb(100, 100, 100)"}/>
+                        {this.props.item.item.imagem ? 
+                            (
+                                <Fragment>
+                                    <Image source={{uri: `${this.props.item.item.imagem}`}} style={styles.imgPosto}/>
+                                </Fragment>
+                            ):(
+                                <MaterialCommunityIcons name="gas-station" size={30} color={"rgb(100, 100, 100)"}/>
+                            )
+                        }
+                        
                     </View>
                     <View style={styles.colunaModelEmpresaInfo}>
                         <Text style={styles.textInfo}> {this.props.item.item.razao_social}</Text>
-                        <TextInputMask type={"cnpj"} editable={false} style={styles.textInfo} value={this.props.item.item.cnpj}/>
-                        <Text style={styles.textInfoProdutos} >{`${this.props.item.item.endereco}, ${this.props.item.item.numero} - ${this.props.item.item.bairro} - ${this.props.item.item.cidade} `}</Text>
+                        <Text style={styles.textInfoEndereco} >{`${this.props.item.item.endereco}, ${this.props.item.item.numero} - ${this.props.item.item.bairro}`}</Text>
+                        <Text style={styles.textInfoDistancia}> {this.state.distancia} {this.state.sigla}</Text>
                     </View>
                 </TouchableOpacity>
                 <Modal animationType="slide" transparent={true} visible={this.state.modalVisible} onRequestClose={()=>{this.setState({modalVisible: false})}} >

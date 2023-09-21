@@ -2,7 +2,7 @@ import React from "react";
 import api from "../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { View, Text, TextInput, TouchableOpacity, Alert} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ToastAndroid} from "react-native";
 import { styles } from "../temas/base";
 import { getUniqueId } from 'react-native-device-info';
 import moment from "moment";
@@ -51,23 +51,27 @@ export class Login extends React.Component {
             }
         })
         .catch(async (error)=>{
+            console.log(error.response)
             if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
-                this.props.navigation.navigate('login')
-                await AsyncStorage.removeItem('token')
+                this.props.navigation.navigate('login');
+                await AsyncStorage.removeItem('token');
                 return;
             }else if (error.response.data.error === 'Signature verification failed'){
-                this.props.navigation.navigate('login')
-                await AsyncStorage.removeItem('token')
+                this.props.navigation.navigate('login');
+                await AsyncStorage.removeItem('token');
                 return;
             }else if(error.response.data.error === 'Token expirado'){
-                this.props.navigation.navigate('login')
-                await AsyncStorage.removeItem('token')
+                this.props.navigation.navigate('login');
+                await AsyncStorage.removeItem('token');
                 return;
             }else if(error.response.data.error === 'Token expirado'){
-                this.props.navigation.navigate('login')
-                await AsyncStorage.removeItem('token')
+                this.props.navigation.navigate('login');
+                await AsyncStorage.removeItem('token');
                 return;
-            }
+            }else if (error.response.data.Error === 'usuario ou senha invalidos.'){
+                ToastAndroid.show("Usuário ou senha inválidos.", ToastAndroid.SHORT);
+                return;
+            } 
         })
     }   
 
@@ -107,7 +111,7 @@ export class Login extends React.Component {
 
         })
         .catch(async (error)=>{
-            console.log(error)
+            console.log(error.response)
             if(error.response.data.erros[0] === 'Sem conexao com a api ou falta fazer login.'){
                 this.props.navigation.navigate('login')
                 await AsyncStorage.removeItem('token')
